@@ -133,7 +133,6 @@ const miloLibs = setLibs(LIBS);
       const img = new Image();
       img.fetchPriority = 'high';
       img.src = `${d.innerText}`;
-      console.log('img', img);
     });
   }
 }());

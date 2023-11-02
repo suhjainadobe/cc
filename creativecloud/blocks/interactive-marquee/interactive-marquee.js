@@ -1,14 +1,14 @@
+/* eslint-disable no-nested-ternary */
 let excelLink = '';
-let configObj = {};
-const base = `${window.location.origin}/creativecloud`;
+const configObj = {};
 const customElem = document.createElement('ft-changebackgroundmarquee');
 
 function getImageSrc(node) {
-    return Array.from(node).map((el) => {
-      const a = el.querySelector('a');
-      return a.href;
-    });
-  }
+  return Array.from(node).map((el) => {
+    const a = el.querySelector('a');
+    return a.href;
+  });
+}
 
 function getText(node) {
   return Array.from(node).map((el) => el.innerText.trim());
@@ -50,9 +50,8 @@ function getIconAndName(dataSet, viewportType) {
   const childrenArr = processDataSet(dataSet);
   const objArr = [];
   const iconBlock = childrenArr.shift();
-  console.log('iconBlock', iconBlock);
-  objArr['iconUrl'] = iconBlock.innerText;
-  objArr['name'] = getTextItemValues(dataSet, viewportType, true);
+  objArr.iconUrl = iconBlock.innerText;
+  objArr.name = getTextItemValues(dataSet, viewportType, true);
   return objArr;
 }
 
@@ -64,16 +63,14 @@ async function createConfig(el) {
     for (const objKeys of ['defaultBgSrc', 'talentSrc', 'marqueeTitleImgSrc']) {
       viewportObj[objKeys] = getImageUrlValues(dataSet, objKeys, viewportType);
     }
-    viewportObj['tryitText'] = getTextItemValues(dataSet[3], viewportType);
-    viewportObj['groups'] = [];
+    viewportObj.tryitText = getTextItemValues(dataSet[3], viewportType);
+    viewportObj.groups = [];
     for (let i = 4; i < dataSet.length - 1; i++) {
       const arr = getIconAndName(dataSet[i], viewportType);
-      viewportObj.groups.push({'iconUrl': arr.iconUrl, 'name': arr.name});
+      viewportObj.groups.push({ iconUrl: arr.iconUrl, name: arr.name });
     }
-    // TODO: uncomment when needed
     configObj[viewportType] = viewportObj;
   }
-  // customElem.config = configObj;
   excelLink = dataSet[dataSet.length - 1].innerText.trim();
 }
 
@@ -90,47 +87,39 @@ function getExcelDataCursor(excelJson, type) {
 
 function getSrcFromExcelData(name, viewportType, excelData, type) {
   return excelData
-    .filter((data) => data.ComponentName === name && data.Viewport === viewportType && data.MappedName === type)
+    .filter((data) => data.ComponentName === name
+    && data.Viewport === viewportType
+    && data.MappedName === type)
     .flatMap((data) => [data.Value1, data.Value2, data.Value3].filter((value) => value.trim() !== ''));
 }
 
 function createConfigExcel(excelJson, configObjData) {
-    const viewportTypes = ['desktop', 'tablet', 'mobile'];
-    for (const viewportType of viewportTypes) {
-      configObjData[viewportType].tryitSrc = getExcelDataCursor(excelJson, 'tryitSrc');
-      if (viewportType == 'desktop') {
-        configObjData[viewportType].cursorSrc = getExcelDataCursor(excelJson, 'cursorSrc');
+  const viewportTypes = ['desktop', 'tablet', 'mobile'];
+  for (const viewportType of viewportTypes) {
+    configObjData[viewportType].tryitSrc = getExcelDataCursor(excelJson, 'tryitSrc');
+    if (viewportType == 'desktop') {
+      configObjData[viewportType].cursorSrc = getExcelDataCursor(excelJson, 'cursorSrc');
+    }
+    const existingGroups = configObjData[viewportType].groups;
+    for (const group of existingGroups) {
+      const name = group.name;
+      const groupsrc = getSrcFromExcelData(name, viewportType, excelJson, 'src');
+      const groupswatchSrc = getSrcFromExcelData(name, viewportType, excelJson, 'swatchSrc');
+      group.options = [];
+      for (let i = 0; i < groupsrc.length; i++) {
+        const option = { src: groupsrc[i] };
+        if (groupswatchSrc[i]) option.swatchSrc = groupswatchSrc[i];
+        group.options.push(option);
       }
-      const existingGroups = configObjData[viewportType].groups;
-      for (const group of existingGroups) {
-        const name = group.name;
-        const groupsrc = getSrcFromExcelData(name, viewportType, excelJson, 'src');
-        const groupswatchSrc = getSrcFromExcelData(name, viewportType, excelJson, 'swatchSrc');
-        group.options = [];
-        for (let i = 0; i < groupsrc.length; i++) {
-          const option = { src: groupsrc[i] };
-          if (groupswatchSrc[i]) option.swatchSrc = groupswatchSrc[i];
-          group.options.push(option);
-        }
-        if (group.options.length === 0) {
-            delete group.options;
-        }
+      if (group.options.length === 0) {
+        delete group.options;
       }
     }
   }
+}
 
 export default async function init(el) {
-  // const firstDiv = el.querySelectorAll(':scope > div');
-  // const firstThreeDivs = Array.prototype.slice.call(firstDiv, 0, 3);
-  // [...firstThreeDivs].forEach((ele) => {
-  //   const d = ele.querySelector('div');
-  //   const img = new Image();
-  //   img.fetchPriority = 'high';
-  //   img.src = `${d.innerText}`;
-  //   console.log('img', img);
-  // });
   createConfig(el, configObj);
-  console.log('configObj2', customElem.config);
   const excelJsonData = await getExcelData(excelLink);
   createConfigExcel(excelJsonData, customElem.config);
   el.replaceWith(customElem);
