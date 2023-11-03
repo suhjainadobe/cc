@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-nested-ternary */
 let excelLink = '';
 const configObj = {};
@@ -97,12 +98,12 @@ function createConfigExcel(excelJson, configObjData) {
   const viewportTypes = ['desktop', 'tablet', 'mobile'];
   for (const viewportType of viewportTypes) {
     configObjData[viewportType].tryitSrc = getExcelDataCursor(excelJson, 'tryitSrc');
-    if (viewportType == 'desktop') {
+    if (viewportType === 'desktop') {
       configObjData[viewportType].cursorSrc = getExcelDataCursor(excelJson, 'cursorSrc');
     }
     const existingGroups = configObjData[viewportType].groups;
     for (const group of existingGroups) {
-      const name = group.name;
+      const { name } = group;
       const groupsrc = getSrcFromExcelData(name, viewportType, excelJson, 'src');
       const groupswatchSrc = getSrcFromExcelData(name, viewportType, excelJson, 'swatchSrc');
       group.options = [];
