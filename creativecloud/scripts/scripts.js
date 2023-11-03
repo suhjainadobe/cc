@@ -134,6 +134,10 @@ const miloLibs = setLibs(LIBS);
       img.fetchPriority = 'high';
       img.src = `${d.innerText}`;
     });
+    const excelLink = a[a.length - 1].innerText.trim();
+    const resp = await fetch(excelLink);
+    const { data } = await resp.json();
+    data.map((grp) => grp);
   }
 }());
 
