@@ -1,0 +1,26 @@
+.debug {
+  position: relative;
+  border: red 3px solid;
+}
+
+.notifications {
+  position: absolute;
+  top: 0;
+  background: white;
+}
+
+.notifications > div {
+  padding: 5px;
+}
+
+.notice {
+  background: lightseagreen;
+}
+
+.error {
+  background: lightcoral;
+}
+
+.warning {
+  background: lightyellow;
+}
