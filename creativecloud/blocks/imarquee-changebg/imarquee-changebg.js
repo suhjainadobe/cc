@@ -125,7 +125,7 @@ export default async function init(el) {
     const marqueeEle = document.createElement('ft-changebackgroundmarquee');
     marqueeEle.config = config;
 
-    import(`${base}/deps/interactive-marquee-changebg/changeBgMarquee.js`);
+    import(`${base}/deps/imarquee-changebg/ft-everyonechangebgmarquee-8e121e97.js`);
 
     marqueeEle.addEventListener('preload', (ev) => {
       marqueeEle.updateComplete.then(() => {
