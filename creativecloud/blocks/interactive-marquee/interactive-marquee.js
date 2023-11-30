@@ -73,6 +73,11 @@ export default async function init(el) {
   const { decorateButtons, decorateBlockBg } = await import(`${miloLibs}/utils/decorate.js`);
   const { createTag, loadStyle } = await import(`${miloLibs}/utils/utils.js`);
   switch (true) {
+    case el.classList.contains('changebg'):
+      // eslint-disable-next-line no-case-declarations
+      const { default: changeBg } = await import('../../features/changeBg/changeBg.js');
+      changeBg(el);
+      break;
     case el.classList.contains('firefly'): {
       interactiveInit(el, decorateButtons, decorateBlockBg, createTag, loadStyle);
       loadStyle('/creativecloud/features/interactive-elements/interactive-elements.css');
