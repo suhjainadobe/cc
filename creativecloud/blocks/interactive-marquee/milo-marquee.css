@@ -28,7 +28,6 @@
   position: relative;
   top: 63px; /* mobile */
   margin: 0 auto;
-  cursor: pointer;
 }
 
 .interactive-marquee .text {
@@ -182,4 +181,7 @@
     max-width: 500px;
   }
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/main

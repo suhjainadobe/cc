@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { setLibs } from './utils.js';
+import { setLibs, decorateArea } from './utils.js';
 
 // Add project-wide style path here.
 const STYLES = '/creativecloud/styles/styles.css';
@@ -100,6 +100,22 @@ const locales = {
   kr: { ietf: 'ko-KR', tk: 'qjs5sfm' },
   // Langstore Support.
   langstore: { ietf: 'en-US', tk: 'hah7vzn.css' },
+  // geo expansion MWPW-125686
+  za: { ietf: 'en-GB', tk: 'pps7abe.css' }, // South Africa (GB English)
+  ng: { ietf: 'en-GB', tk: 'pps7abe.css' }, // Nigeria (GB English)
+  cr: { ietf: 'es-419', tk: 'oln4yqj.css' }, // Costa Rica (Spanish Latin America)
+  ec: { ietf: 'es-419', tk: 'oln4yqj.css' }, // Ecuador (Spanish Latin America)
+  pr: { ietf: 'es-419', tk: 'oln4yqj.css' }, // Puerto Rico (Spanish Latin America)
+  gt: { ietf: 'es-419', tk: 'oln4yqj.css' }, // Guatemala (Spanish Latin America)
+  eg_ar: { ietf: 'ar', tk: 'nwq1mna.css', dir: 'rtl' }, // Egypt (Arabic)
+  kw_ar: { ietf: 'ar', tk: 'nwq1mna.css', dir: 'rtl' }, // Kuwait (Arabic)
+  qa_ar: { ietf: 'ar', tk: 'nwq1mna.css', dir: 'rtl' }, // Qatar (Arabic)
+  eg_en: { ietf: 'en-GB', tk: 'pps7abe.css' }, // Egypt (GB English)
+  kw_en: { ietf: 'en-GB', tk: 'pps7abe.css' }, // Kuwait (GB English)
+  qa_en: { ietf: 'en-GB', tk: 'pps7abe.css' }, // Qatar (GB English)
+  gr_el: { ietf: 'el', tk: 'fnx0rsr.css' }, // Greece (Greek)
+  vn_en: { ietf: 'en-GB', tk: 'hah7vzn.css' },
+  vn_vi: { ietf: 'vi', tk: 'qxw8hzm.css' },
 };
 
 // Add any config options.
@@ -110,11 +126,23 @@ const CONFIG = {
   locales,
   geoRouting: 'on',
   prodDomains: ['www.adobe.com'],
+  decorateArea,
   stage: {
     marTechUrl: 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-2c94beadc94f-development.min.js',
     edgeConfigId: '8d2805dd-85bf-4748-82eb-f99fdad117a6',
+    pdfViewerClientId: '8d2de6a43c194397933c3d41f6dadef5',
+    pdfViewerReportSuite: 'adbadobenonacdcqa',
   },
-  live: { edgeConfigId: '8d2805dd-85bf-4748-82eb-f99fdad117a6' },
+  live: {
+    pdfViewerClientId: 'a26c77a2effb4c4aaa71e7c46385e0ed',
+    pdfViewerReportSuite: 'adbadobenonacdcqa',
+  },
+  prod: {
+    marTechUrl: 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-5dd5dd2177e6.min.js',
+    edgeConfigId: '2cba807b-7430-41ae-9aac-db2b0da742d5',
+    pdfViewerClientId: '409019ebd2d546c0be1a0b5a61fe65df',
+    pdfViewerReportSuite: 'adbadobenonacdcprod',
+  },
   jarvis: {
     id: 'adobedotcom2',
     version: '1.83',
@@ -122,33 +150,7 @@ const CONFIG = {
   },
 };
 
-// Load LCP image immediately
-const eagerLoad = (img) => {
-  img?.setAttribute('loading', 'eager');
-  img?.setAttribute('fetchpriority', 'high');
-};
-
-(async function loadLCPImage() {
-  const firstDiv = document.querySelector('body > main > div:nth-child(1) > div');
-  let fgDivs = null;
-  switch (true) {
-    case firstDiv?.classList.contains('changebg'):
-      firstDiv.querySelector(':scope > div:nth-child(1)').querySelectorAll('img').forEach(eagerLoad);
-      import(`${CONFIG.codeRoot}/deps/interactive-marquee-changebg/changeBgMarquee.js`);
-      break;
-    case firstDiv?.classList.contains('marquee'):
-      firstDiv.querySelectorAll('img').forEach(eagerLoad);
-      break;
-    case firstDiv?.classList.contains('interactive-marquee'):
-      firstDiv.querySelector(':scope > div:nth-child(1)').querySelectorAll('img').forEach(eagerLoad);
-      fgDivs = firstDiv.querySelector(':scope > div:nth-child(2)').querySelectorAll('div:not(:first-child)');
-      fgDivs.forEach((d) => eagerLoad(d.querySelector('img')));
-      break;
-    default:
-      eagerLoad(document.querySelector('img'));
-      break;
-  }
-}());
+decorateArea();
 
 /*
  * ------------------------------------------------------------
