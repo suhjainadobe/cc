@@ -67,6 +67,7 @@ function interactiveInit(el, decorateButtons, decorateBlockBg, createTag) {
 }
 
 export default async function init(el) {
+  //changes
   const miloLibs = getLibs('/libs');
   const { decorateButtons, decorateBlockBg } = await import(`${miloLibs}/utils/decorate.js`);
   const { createTag, loadStyle } = await import(`${miloLibs}/utils/utils.js`);
