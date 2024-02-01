@@ -22,7 +22,11 @@
 export const [setLibs, getLibs] = (() => {
   let libs;
   return [
-    (prodLibs) => {
+    (prodLibs, force = false) => {
+      if (force) {
+        libs = prodLibs;
+        return libs;
+      }
       const { hostname } = window.location;
       if (!hostname.includes('hlx.page')
         && !hostname.includes('hlx.live')
@@ -32,12 +36,17 @@ export const [setLibs, getLibs] = (() => {
       }
       const branch = new URLSearchParams(window.location.search).get('milolibs') || 'main';
       if (branch === 'local') { libs = 'http://localhost:6456/libs'; return libs; }
-      if (branch.indexOf('--') > -1) { libs = `https://${branch}.hlx.page/libs`; return libs; }
+      if (branch.indexOf('--') > -1) { libs = `https://${branch}.hlx.live/libs`; return libs; }
       libs = `https://${branch}--milo--adobecom.hlx.live/libs`;
       return libs;
     }, () => libs,
   ];
 })();
+
+const miloLibs = setLibs('/libs');
+
+const { createTag, localizeLink } = await import(`${miloLibs}/utils/utils.js`);
+export { createTag, localizeLink };
 
 function getDecorateAreaFn() {
   let lcpImgSet = false;
@@ -56,7 +65,7 @@ function getDecorateAreaFn() {
       case firstBlock?.classList.contains('changebg'): {
         firstBlock.querySelector(':scope > div:nth-child(1)').querySelectorAll('img').forEach(eagerLoad);
         const { getConfig } = await import(`${getLibs()}/utils/utils.js`);
-        import(`${getConfig().codeRoot}/creativecloud/deps/interactive-marquee-changebg/changeBgMarquee.js`);
+        import(`${getConfig().codeRoot}/deps/interactive-marquee-changebg/changeBgMarquee.js`);
         break;
       }
       case firstBlock?.classList.contains('marquee'):

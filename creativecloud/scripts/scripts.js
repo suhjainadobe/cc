@@ -125,7 +125,8 @@ const CONFIG = {
   imsClientId: 'adobedotcom-cc',
   locales,
   geoRouting: 'on',
-  prodDomains: ['www.adobe.com'],
+  prodDomains: ['www.adobe.com', 'helpx.adobe.com', 'business.adobe.com'],
+  queryIndexCardPath: '/cc-shared/assets/query-index-cards',
   decorateArea,
   stage: {
     marTechUrl: 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-2c94beadc94f-development.min.js',
@@ -148,9 +149,10 @@ const CONFIG = {
     version: '1.83',
     onDemand: false,
   },
+  htmlExclude: [
+    /www\.adobe\.com\/(\w\w(_\w\w)?\/)?express(\/.*)?/,
+  ],
 };
-
-decorateArea();
 
 /*
  * ------------------------------------------------------------
@@ -159,6 +161,9 @@ decorateArea();
  */
 
 const miloLibs = setLibs(LIBS);
+const { loadArea, setConfig, loadLana, loadIms } = await import(`${miloLibs}/utils/utils.js`);
+setConfig({ ...CONFIG, miloLibs });
+decorateArea();
 
 (function loadStyles() {
   const paths = [`${miloLibs}/styles/styles.css`];
@@ -172,8 +177,6 @@ const miloLibs = setLibs(LIBS);
 }());
 
 (async function loadPage() {
-  const { loadArea, setConfig, loadLana, loadIms } = await import(`${miloLibs}/utils/utils.js`);
-  setConfig({ ...CONFIG, miloLibs });
   loadLana({ clientId: 'cc' });
   await loadArea();
   if ((window.location.search.includes('goToFirefly')
