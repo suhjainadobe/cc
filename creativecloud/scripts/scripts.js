@@ -116,6 +116,8 @@ const locales = {
   gr_el: { ietf: 'el', tk: 'fnx0rsr.css' }, // Greece (Greek)
   vn_en: { ietf: 'en-GB', tk: 'hah7vzn.css' },
   vn_vi: { ietf: 'vi', tk: 'qxw8hzm.css' },
+  cis_ru: { ietf: 'ru', tk: 'qxw8hzm.css' },
+  cis_en: { ietf: 'en', tk: 'pps7abe.css' },
 };
 
 // Add any config options.
@@ -131,7 +133,7 @@ const CONFIG = {
   stage: {
     marTechUrl: 'https://assets.adobedtm.com/d4d114c60e50/a0e989131fd5/launch-2c94beadc94f-development.min.js',
     edgeConfigId: '8d2805dd-85bf-4748-82eb-f99fdad117a6',
-    pdfViewerClientId: '8d2de6a43c194397933c3d41f6dadef5',
+    pdfViewerClientId: '9f7f19a46bd542e2b8548411e51eb4d4',
     pdfViewerReportSuite: 'adbadobenonacdcqa',
   },
   live: {
@@ -151,6 +153,7 @@ const CONFIG = {
   },
   htmlExclude: [
     /www\.adobe\.com\/(\w\w(_\w\w)?\/)?express(\/.*)?/,
+    /www\.adobe\.com\/(\w\w(_\w\w)?\/)?go(\/.*)?/,
   ],
 };
 
@@ -161,7 +164,7 @@ const CONFIG = {
  */
 
 const miloLibs = setLibs(LIBS);
-const { loadArea, setConfig, loadLana, loadIms } = await import(`${miloLibs}/utils/utils.js`);
+const { loadArea, setConfig, loadLana } = await import(`${miloLibs}/utils/utils.js`);
 setConfig({ ...CONFIG, miloLibs });
 decorateArea();
 
@@ -179,13 +182,4 @@ decorateArea();
 (async function loadPage() {
   loadLana({ clientId: 'cc' });
   await loadArea();
-  if ((window.location.search.includes('goToFirefly')
-  || window.location.search.includes('goToFireflyEffects')
-  || window.location.search.includes('goToFireflyGenFill'))) {
-    try { await loadIms(); } catch { return; }
-    if (window.adobeIMS?.isSignedInUser()) {
-      const { redirectWithParam } = await import('../features/firefly/firefly-susi.js');
-      redirectWithParam();
-    }
-  }
 }());
