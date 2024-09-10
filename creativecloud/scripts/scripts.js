@@ -170,6 +170,12 @@ const CONFIG = {
     /www\.adobe\.com\/(\w\w(_\w\w)?\/)?express(\/.*)?/,
     /www\.adobe\.com\/(\w\w(_\w\w)?\/)?go(\/.*)?/,
   ],
+  susiOptions: {
+    dctx_id: {
+      stage: 'v:2,s,bg:milo,db4f1a70-63f0-11ef-8097-a9e5f634eb93',
+      prod: 'v:2,s,bg:milo,b719a8b0-6ba6-11ef-933e-7f38920b05fd',
+    }
+  }
 };
 
 /*
