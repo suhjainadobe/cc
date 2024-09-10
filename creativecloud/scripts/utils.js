@@ -108,7 +108,7 @@ function getDecorateAreaFn() {
         };
         if (bgImages?.querySelectorAll('img').length === 1 && bgImages.querySelectorAll('div').length === 1) eagerLoad(bgImages?.querySelector('div img'));
         else eagerLoad(bgImages?.querySelector(`:scope ${lcpImgVP[viewport]}`));
-        // Foreground image
+        // Foreground images
         eagerLoad(firstBlock.querySelector(':scope div:last-child > div img'));
         break;
       }
