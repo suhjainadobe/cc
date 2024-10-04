@@ -1,5 +1,4 @@
-import { getLibs, createTag, loadStyle } from '../../scripts/utils.js';
-import defineDeviceByScreenSize from '../../scripts/decorate.js';
+import { getLibs, createTag, loadStyle, defineDeviceByScreenSize } from '../../scripts/scripts.js';
 
 export function getImgSrc(pic) {
   const viewport = defineDeviceByScreenSize() === 'MOBILE' ? 'mobile' : 'desktop';
