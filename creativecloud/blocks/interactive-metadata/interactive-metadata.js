@@ -331,23 +331,38 @@ function getWorkFlowInformation(el) {
 export default async function init(el) {
   const workflow = getWorkFlowInformation(el);
   if (!workflow.length) return;
-  const stepInfo = {
-    el,
-    stepIndex: -1,
-    stepName: '',
-    stepList: workflow,
-    stepConfigs: el.querySelectorAll(':scope > div'),
-    nextStepEvent: 'cc:interactive-switch',
-    displayPath: 0,
-    openForExecution: Promise.resolve(true),
-  };
-  await handleNextStep(stepInfo);
+  // First, quickly set up and display the image for LCP
   const targetAsset = await getTargetArea(el);
   if (!targetAsset) return;
-  stepInfo.target = targetAsset;
-  await renderLayer(stepInfo);
-  if (workflow.length === 1) return;
-  el.addEventListener('cc:interactive-switch', async () => {
+  // Initialize basic image display without waiting for interactive elements
+  const firstConfig = el.querySelector(':scope > div');
+  if (firstConfig) {
+    const displayPics = firstConfig.querySelectorAll(':scope > div > p > picture img[src*="media_"]');
+    if (displayPics.length) {
+      const picSrc = getImgSrc(displayPics[0].closest('picture'));
+      const trgtPic = targetAsset.querySelector(':scope > picture');
+      await createDisplayImg(targetAsset, trgtPic, picSrc, displayPics[0].alt);
+    }
+  }
+
+  // Then asynchronously load the interactive elements
+  setTimeout(async () => {
+    const stepInfo = {
+      el,
+      stepIndex: -1,
+      stepName: '',
+      stepList: workflow,
+      stepConfigs: el.querySelectorAll(':scope > div'),
+      nextStepEvent: 'cc:interactive-switch',
+      displayPath: 0,
+      openForExecution: Promise.resolve(true),
+      target: targetAsset,
+    };
+    await handleNextStep(stepInfo);
     await renderLayer(stepInfo);
-  });
+    if (workflow.length === 1) return;
+    el.addEventListener('cc:interactive-switch', async () => {
+      await renderLayer(stepInfo);
+    });
+  }, 0);
 }
