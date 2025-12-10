@@ -1,4 +1,5 @@
 import { createTag, getScreenSizeCategory } from '../../scripts/utils.js';
+
 const ADOBE_STOCK_API_KEY = 'PrX-iOS';
 const ADOBE_STOCK_PRODUCT = 'Squirrel Mobile/1.0.0';
 const COLUMNS = { desktop: 5, tablet: 3, mobile: 2 };
@@ -156,11 +157,39 @@ function createInfoButton() {
 }
 
 /**
+ * Detects whether the current device is an iPhone or iPad.
+ *
+ * Covers:
+ * - iPhone (UA includes "iPhone")
+ * - Old iPads (UA includes "iPad")
+ * - New iPads that use macOS-like userAgent ("Macintosh") but support touch.
+ *
+ * Returns: true if iPhone or iPad, false otherwise.
+ */
+function isIOSDevice() {
+  const ua = navigator.userAgent;
+
+  const isiPhone = /iPhone/i.test(ua);
+  const isiPadOld = /iPad/i.test(ua);
+  const isiPadNew = /Macintosh/i.test(ua) && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
+  return isiPhone || isiPadOld || isiPadNew;
+}
+
+const shouldShowEditButton = isIOSDevice();
+
+/**
  * Creates the "Edit this template" button.
  */
 function createEditButton(buttonText) {
   const button = createTag('a', { class: 'pre-yt-button' });
   button.textContent = buttonText;
+
+  // Hide button if NOT iPhone and NOT iPad
+  if (!shouldShowEditButton) {
+    button.style.display = 'none';
+  }
+
   return button;
 }
 
@@ -343,7 +372,6 @@ export default function init(el) {
   const grid = createTag('div', { class: 'pre-yt-grid' });
   el.append(grid);
 
-  
   // Set initial grid layout based on current viewport
   updateGridLayout(grid, props.rowCount, viewport);
 
