@@ -8,21 +8,21 @@
 
 .pre-yt-grid {
   display: grid;
-  grid-template-columns: repeat(2, 143px);
+  grid-template-columns: repeat(2, minmax(min-content, 143px));
   column-gap: 16px;
   row-gap: 15px;
-  /* padding-top: 55px; */
-  padding-top: 70px;
-  padding-bottom: 80px;
+  padding: 80px 20px 80px;
+  max-width: calc((143px * 2) + 16px + 40px); /* 2 cards + gap + padding */
+  margin: 0 auto;
 }
 
 .pre-yt-card {
-  width: 143px;
-  height: 252px;
+  width: 100%;
+  aspect-ratio: 1 / 1.76;
   border-radius: 18px;
   overflow: hidden;
   position: relative;
-  transition: width 0.2s ease-out, height 0.2s ease-out, margin 0.2s ease-out;
+  transition: transform 0.2s ease-out;
   background: #C5C2C2;
 }
 
@@ -87,12 +87,10 @@
   line-height: 15px
 }
 
-/* Expanded state on hover - Mobile: 143 + 32 = 175, 252 + 32 = 284 */
+/* Expanded state on hover - scale by ~1.224 (143 -> 175, 252 -> 284) */
 .pre-yt-card.expanded {
   z-index: 1;
-  width: 175px;
-  height: 284px;
-  margin: -16px;
+  transform: scale(1.224);
   border: 2px solid #fff;
 }
 
@@ -225,12 +223,8 @@
 /* Tablet: 600px - 1199px */
 @media (min-width: 600px) {
   .pre-yt-grid {
-    grid-template-columns: repeat(3, 203px);
-  }
-
-  .pre-yt-card {
-    width: 203px;
-    height: 361px;
+    grid-template-columns: repeat(3, minmax(min-content, 203px));
+    max-width: calc((203px * 3) + (16px * 2) + 40px); /* 3 cards + gaps + padding */
   }
 
   /* Reset mobile offset (2n) */
@@ -243,12 +237,14 @@
     transform: translateY(-55px);
   }
 
-  /* Expanded state - Tablet: 203 + 32 = 235, 361 + 32 = 393 */
+  /* Expanded state - Tablet: scale by ~1.158 (203 -> 235, 361 -> 393) */
   .pre-yt-card.expanded {
-    width: 235px;
-    height: 393px;
+    transform: scale(1.158);
   }
 
+  .pre-yt-card.expanded:nth-child(3n+2) {
+    transform: translateY(-55px) scale(1.158);
+  }
 
   .pre-yt-card .pre-yt-button {
     font-size: 18px;
@@ -266,12 +262,8 @@
 /* Desktop: 1200px and above */
 @media (min-width: 1200px) {
   .pre-yt-grid {
-    grid-template-columns: repeat(5, 275px);
-  }
-
-  .pre-yt-card {
-    width: 275px;
-    height: 489px;
+    grid-template-columns: repeat(5, minmax(min-content, 275px));
+    max-width: calc((275px * 5) + (16px * 4) + 40px); /* 5 cards + gaps + padding */
   }
 
   /* Reset tablet offset (3n+2) */
@@ -285,12 +277,15 @@
     transform: translateY(-55px);
   }
 
-  /* Expanded state - Desktop: 275 + 32 = 307, 489 + 32 = 521 */
+  /* Expanded state - Desktop: scale by ~1.116 (275 -> 307, 489 -> 521) */
   .pre-yt-card.expanded {
-    width: 307px;
-    height: 521px;
+    transform: scale(1.116);
   }
 
+  .pre-yt-card.expanded:nth-child(5n+2),
+  .pre-yt-card.expanded:nth-child(5n+4) {
+    transform: translateY(-55px) scale(1.116);
+  }
 
   .pre-yt-card .pre-yt-button {
     display: none;

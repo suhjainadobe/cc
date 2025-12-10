@@ -1,9 +1,8 @@
 import { createTag, getScreenSizeCategory } from '../../scripts/utils.js';
 
-const ADOBE_STOCK_API_KEY = 'PrX-iOS';
-const ADOBE_STOCK_PRODUCT = 'Squirrel Mobile/1.0.0';
-const COLUMNS = { desktop: 5, tablet: 3, mobile: 2 };
-const ROW_HEIGHTS = { desktop: '489px', tablet: '361px', mobile: '252px' };
+const CARD_LIMIT = { desktop: 15, tablet: 9, mobile: 10 };
+const ADOBE_STOCK_API_KEY = 'milo-prm-yt-gallery';
+const ADOBE_STOCK_PRODUCT = 'creativecloud';
 
 /**
  * Cleans URL by removing escaped forward slashes.
@@ -11,12 +10,6 @@ const ROW_HEIGHTS = { desktop: '489px', tablet: '361px', mobile: '252px' };
 function cleanUrl(url) {
   if (!url) return '';
   return url.replace(/\\\//g, '/');
-}
-
-function updateGridLayout(grid, rowCount, viewport) {
-  const rows = rowCount[viewport];
-  const rowHeight = ROW_HEIGHTS[viewport];
-  grid.style.gridTemplateRows = `repeat(${rows}, ${rowHeight})`;
 }
 
 /**
@@ -157,28 +150,6 @@ function createInfoButton() {
 }
 
 /**
- * Detects whether the current device is an iPhone or iPad.
- *
- * Covers:
- * - iPhone (UA includes "iPhone")
- * - Old iPads (UA includes "iPad")
- * - New iPads that use macOS-like userAgent ("Macintosh") but support touch.
- *
- * Returns: true if iPhone or iPad, false otherwise.
- */
-function isIOSDevice() {
-  const ua = navigator.userAgent;
-
-  const isiPhone = /iPhone/i.test(ua);
-  const isiPadOld = /iPad/i.test(ua);
-  const isiPadNew = /Macintosh/i.test(ua) && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
-
-  return isiPhone || isiPadOld || isiPadNew;
-}
-
-const shouldShowEditButton = isIOSDevice();
-
-/**
  * Creates the "Edit this template" button.
  */
 function createEditButton(buttonText) {
@@ -222,6 +193,14 @@ function createInfoOverlay() {
   return overlay;
 }
 
+function isIOSDevice() {
+  const ua = navigator.userAgent;
+  const isiPhone = /iPhone/i.test(ua);
+  const isiPadOld = /iPad/i.test(ua);
+  const isiPadNew = /Macintosh/i.test(ua) && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+  return isiPhone || isiPadOld || isiPadNew;
+}
+
 /**
  * Creates a shimmer card placeholder with all UI elements.
  */
@@ -229,9 +208,12 @@ function createShimmerCard(buttonText) {
   const card = createTag('div', { class: 'pre-yt-card shimmer' });
   const imageWrapper = createTag('div', { class: 'image-wrapper' });
   const videoWrapper = createTag('div', { class: 'video-wrapper' });
+  const shouldShowEditButton = isIOSDevice();
 
   videoWrapper.append(createInfoButton());
-  videoWrapper.append(createEditButton(buttonText));
+  if (shouldShowEditButton) {
+    videoWrapper.append(createEditButton(buttonText));
+  }
   videoWrapper.append(createInfoOverlay());
 
   card.append(imageWrapper);
@@ -368,12 +350,9 @@ export default function init(el) {
   const props = parseBlockProps(el);
   el.innerHTML = '';
   const viewport = getScreenSizeCategory({ mobile: 599, tablet: 1199 });
-  const vpCardLimit = props.rowCount[viewport] * COLUMNS[viewport];
+  const vpCardLimit = CARD_LIMIT[viewport];
   const grid = createTag('div', { class: 'pre-yt-grid' });
   el.append(grid);
-
-  // Set initial grid layout based on current viewport
-  updateGridLayout(grid, props.rowCount, viewport);
 
   // Render shimmer placeholders (renders max cards needed across all viewports)
   renderShimmerGrid(grid, props.buttonText, vpCardLimit);
