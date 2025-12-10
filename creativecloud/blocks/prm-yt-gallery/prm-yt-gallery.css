@@ -11,7 +11,7 @@
   grid-template-columns: repeat(2, minmax(min-content, 143px));
   column-gap: 16px;
   row-gap: 15px;
-  padding: 80px 20px 80px;
+  padding: 90px 80px 80px;
   max-width: calc((143px * 2) + 16px + 40px); /* 2 cards + gap + padding */
   margin: 0 auto;
 }
@@ -268,6 +268,11 @@
     transform: scale(1.158);
   }
 
+  /* Reset mobile expanded offset (2n) */
+  .pre-yt-card.expanded:nth-child(2n) {
+    transform: scale(1.158);
+  }
+
   .pre-yt-card.expanded:nth-child(3n+2) {
     transform: translateY(-55px) scale(1.158);
   }
@@ -313,6 +318,12 @@
 
   /* Expanded state - Desktop: scale by ~1.116 (275 -> 307, 489 -> 521) */
   .pre-yt-card.expanded {
+    transform: scale(1.116);
+  }
+
+  /* Reset mobile (2n) and tablet (3n+2) expanded offsets */
+  .pre-yt-card.expanded:nth-child(2n),
+  .pre-yt-card.expanded:nth-child(3n+2) {
     transform: scale(1.116);
   }
 
