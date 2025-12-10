@@ -1,6 +1,16 @@
 import { createTag } from '../../scripts/utils.js';
 
 const CARD_LIMIT = 15;
+const ADOBE_STOCK_API_KEY = 'PrX-iOS';
+const ADOBE_STOCK_PRODUCT = 'Squirrel Mobile/1.0.0';
+
+/**
+ * Cleans URL by removing escaped forward slashes.
+ */
+function cleanUrl(url) {
+  if (!url) return '';
+  return url.replace(/\\\//g, '/');
+}
 
 /**
  * Normalizes API item to consistent internal structure.
@@ -8,13 +18,12 @@ const CARD_LIMIT = 15;
  */
 function normalizeItem(apiItem) {
   return {
-    image: apiItem.image || '',
-    altText: apiItem.alt_text || '',
-    deepLinkUrl: apiItem.deep_link_url || '',
-    video: apiItem.video || '',
+    image: cleanUrl(apiItem.thumbnail_url || ''),
+    altText: apiItem.title || 'test text for now',
+    deepLinkUrl: apiItem.deep_link_url || '', // yet to be implemented
+    video: cleanUrl(apiItem.video_preview_url || ''),
   };
 }
-
 
 function createImageElement(src, alt = '', eager = false) {
   return createTag('img', {
@@ -24,38 +33,73 @@ function createImageElement(src, alt = '', eager = false) {
   });
 }
 
-async function fetchData(url) {
+/**
+ * Fetches data from Adobe Stock API with required headers.
+ */
+async function fetchAdobeStockData(config) {
+  const {
+    collectionId,
+    offset = 0,
+    limit = CARD_LIMIT,
+  } = config;
+
   try {
-    const response = await fetch(url);
+    const params = new URLSearchParams({
+      'search_parameters[offset]': offset,
+      'search_parameters[limit]': limit,
+      ff_9909481692: '1',
+      'search_parameters[enable_templates]': '1',
+      'search_parameters[gallery_id]': collectionId,
+    });
+
+    const apiUrl = `https://stock.adobe.io/Rest/Media/1/Search/Collections?${params.toString()}`;
+
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'x-product': ADOBE_STOCK_PRODUCT,
+        'x-api-key': ADOBE_STOCK_API_KEY,
+      },
+    });
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
     return data;
   } catch (error) {
-    window.lana?.log(`Failed to fetch pre-yt data: ${error.message}`, { tags: 'pre-yt' });
+    window.lana?.log(`Failed to fetch Adobe Stock data: ${error.message}`, { tags: 'prm-yt-gallery' });
     return null;
   }
 }
 
+/**
+ * Parses block properties from the authoring table.
+ */
 function parseBlockProps(block) {
   const props = {
-    jsonUrl: null,
+    collectionId: null,
     buttonText: 'Edit this template',
   };
 
   const rows = Array.from(block.children);
 
-  // First row: JSON URL
+  // First row: collectionID | Collection ID value
   if (rows.length > 0) {
     const firstRow = rows[0];
-    const firstDiv = firstRow.querySelector('div');
-    if (firstDiv) {
-      props.jsonUrl = firstDiv.textContent.trim();
+    const cols = firstRow.querySelectorAll('div');
+
+    if (cols.length >= 2) {
+      const label = cols[0].textContent.trim().toLowerCase();
+      const value = cols[1].textContent.trim();
+
+      if (label === 'collectionid' && value) {
+        props.collectionId = value;
+      }
     }
   }
 
-  // Second row: Button text
+  // Second row: button-text | Button text value
   if (rows.length > 1) {
     const secondRow = rows[1];
     const cols = secondRow.querySelectorAll('div');
@@ -254,8 +298,7 @@ function renderShimmerGrid(container, buttonText) {
 
 function updateCardsWithData(container, data) {
   const cards = container.querySelectorAll('.pre-yt-card');
-  const rawItems = data?.data?.slice(0, CARD_LIMIT) || [];
-
+  const rawItems = data?.files?.slice(0, CARD_LIMIT) || [];
   rawItems.forEach((rawItem, index) => {
     if (cards[index]) {
       const item = normalizeItem(rawItem);
@@ -278,11 +321,17 @@ export default function init(el) {
   // Render shimmer placeholders
   renderShimmerGrid(grid, props.buttonText);
 
-  if (!props.jsonUrl) {
+  if (!props.collectionId) {
+    window.lana?.log('Collection ID is required for prm-yt-gallery', { tags: 'prm-yt-gallery' });
     return;
   }
-  // Fetch and update existing cards with real images
-  fetchData(props.jsonUrl).then((data) => {
+
+  // Fetch data from Adobe Stock API
+  fetchAdobeStockData({
+    collectionId: props.collectionId,
+    offset: 0,
+    limit: 96,
+  }).then((data) => {
     if (data) {
       updateCardsWithData(grid, data);
     }
