@@ -1,0 +1,316 @@
+/* pre-yt block styles - Mobile first approach */
+
+.pre-yt {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.pre-yt-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 143px);
+  grid-template-rows: repeat(5, 252px);
+  column-gap: 16px;
+  row-gap: 15px;
+  /* padding-top: 55px; */
+  padding-top: 70px;
+  padding-bottom: 80px;
+}
+
+.pre-yt-card {
+  width: 143px;
+  height: 252px;
+  border-radius: 18px;
+  overflow: hidden;
+  position: relative;
+  transition: width 0.2s ease-out, height 0.2s ease-out, margin 0.2s ease-out;
+  background: #C5C2C2;
+}
+
+/* Mobile: Column 2 cards (2, 4, 6, 8, 10) offset by -55px */
+.pre-yt-card:nth-child(2n) {
+  transform: translateY(-55px);
+}
+
+/* Image wrapper - default state */
+.pre-yt-card .image-wrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.pre-yt-card .image-wrapper picture,
+.pre-yt-card .image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Video wrapper - shown on hover */
+.pre-yt-card .video-wrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+
+.pre-yt-card .video-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Button on hover */
+.pre-yt-card .pre-yt-button {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 14px;
+  border-radius: 16px;
+  border: 2px solid #fff;
+  background: #fff;
+  color: #2C2C2C;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+  line-height: 15px
+}
+
+/* Expanded state on hover - Mobile: 143 + 32 = 175, 252 + 32 = 284 */
+.pre-yt-card.expanded {
+  z-index: 1;
+  width: 175px;
+  height: 284px;
+  margin: -16px;
+  border: 2px solid #fff;
+}
+
+.pre-yt-card.expanded .image-wrapper {
+  opacity: 0;
+}
+
+.pre-yt-card.expanded .video-wrapper {
+  opacity: 1;
+}
+
+.pre-yt-card.expanded .pre-yt-button {
+  opacity: 1;
+}
+
+/* Info button - only visible when expanded */
+.pre-yt-card .pre-yt-info-button {
+  position: absolute;
+  right: 13.9px;
+  top: 11.227px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pre-yt-card.expanded .pre-yt-info-button {
+  opacity: 1;
+}
+
+/* Hide info button when info overlay is visible */
+.pre-yt-card.info-visible .pre-yt-info-button {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Info overlay */
+.pre-yt-card .pre-yt-info-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-out;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  padding: 45px 26px;
+  box-sizing: border-box;
+}
+
+.pre-yt-card.info-visible .pre-yt-info-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Close button */
+.pre-yt-card .pre-yt-overlay-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+}
+
+/* Overlay text */
+.pre-yt-card .pre-yt-overlay-text {
+  flex: 1;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0;
+  overflow-y: auto;
+  word-wrap: break-word;
+}
+
+/* Show button on top of overlay when info is visible */
+.pre-yt-card.info-visible .pre-yt-button {
+  z-index: 4;
+}
+
+/* Hide cards 11-15 on mobile (show only 10) */
+.pre-yt-card:nth-child(n+11) {
+  display: none;
+}
+
+/* Shimmer effect */
+.pre-yt-card.shimmer .image-wrapper {
+  background: linear-gradient(
+    90deg,
+    #e0e0e0 25%,
+    #f0f0f0 50%,
+    #e0e0e0 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Tablet: 600px - 1199px */
+@media (min-width: 600px) {
+  .pre-yt-grid {
+    grid-template-columns: repeat(3, 203px);
+    grid-template-rows: repeat(3, 361px);
+  }
+
+  .pre-yt-card {
+    width: 203px;
+    height: 361px;
+  }
+
+  /* Reset mobile offset (2n) */
+  .pre-yt-card:nth-child(2n) {
+    transform: none;
+  }
+
+  /* Tablet: Column 2 cards (2, 5, 8) offset by -55px */
+  .pre-yt-card:nth-child(3n+2) {
+    transform: translateY(-55px);
+  }
+
+  /* Expanded state - Tablet: 203 + 32 = 235, 361 + 32 = 393 */
+  .pre-yt-card.expanded {
+    width: 235px;
+    height: 393px;
+  }
+
+  /* Reset mobile hiding, hide cards 10-15 on tablet (show only 9) */
+  .pre-yt-card:nth-child(n+11) {
+    display: block;
+  }
+
+  .pre-yt-card:nth-child(n+10) {
+    display: none;
+  }
+
+  .pre-yt-card .pre-yt-button {
+    font-size: 18px;
+    padding: 6px 21px;
+    border-radius: 23px;
+    line-height: 22.164px
+  }
+
+  /* Tablet overlay styles */
+  /* .pre-yt-card .pre-yt-overlay-text {
+    font-size: 16px;
+  } */
+}
+
+/* Desktop: 1200px and above */
+@media (min-width: 1200px) {
+  .pre-yt-grid {
+    grid-template-columns: repeat(5, 275px);
+    grid-template-rows: repeat(3, 489px);
+  }
+
+  .pre-yt-card {
+    width: 275px;
+    height: 489px;
+  }
+
+  /* Reset tablet offset (3n+2) */
+  .pre-yt-card:nth-child(3n+2) {
+    transform: none;
+  }
+
+  /* Desktop: Column 2 cards (2, 7, 12) and Column 4 cards (4, 9, 14) offset by -55px */
+  .pre-yt-card:nth-child(5n+2),
+  .pre-yt-card:nth-child(5n+4) {
+    transform: translateY(-55px);
+  }
+
+  /* Expanded state - Desktop: 275 + 32 = 307, 489 + 32 = 521 */
+  .pre-yt-card.expanded {
+    width: 307px;
+    height: 521px;
+  }
+
+  /* Show all 15 cards on desktop */
+  .pre-yt-card:nth-child(n+10) {
+    display: block;
+  }
+
+  .pre-yt-card .pre-yt-button {
+    display: none;
+  }
+
+  /* Desktop overlay styles */
+  /* .pre-yt-card .pre-yt-overlay-text {
+    font-size: 18px;
+    margin: 48px 8px 16px;
+  } */
+}
