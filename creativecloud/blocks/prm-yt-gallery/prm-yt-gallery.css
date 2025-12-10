@@ -94,6 +94,10 @@
   border: 2px solid #fff;
 }
 
+.pre-yt-card.expanded:nth-child(2n) {
+  transform: translateY(-55px) scale(1.224);
+}
+
 .pre-yt-card.expanded .image-wrapper {
   opacity: 0;
 }
