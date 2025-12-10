@@ -5,8 +5,6 @@ const CARD_LIMIT = 15;
 /**
  * Normalizes API item to consistent internal structure.
  * Update this mapping if API keys change.
- * @param {Object} apiItem - Raw item from API response
- * @returns {Object} Normalized item with consistent keys
  */
 function normalizeItem(apiItem) {
   return {
@@ -17,64 +15,13 @@ function normalizeItem(apiItem) {
   };
 }
 
-function parseImageUrl(src) {
-  if (!src) return { imageUrl: '', ext: 'jpg' };
 
-  let imageUrl;
-  let ext = 'jpg';
-  try {
-    const url = new URL(src, window.location.href);
-    imageUrl = url.pathname;
-    ext = imageUrl.substring(imageUrl.lastIndexOf('.') + 1) || 'jpg';
-  } catch (e) {
-    imageUrl = src.startsWith('/') ? src : `/${src}`;
-    ext = imageUrl.substring(imageUrl.lastIndexOf('.') + 1) || 'jpg';
-  }
-
-  return { imageUrl, ext };
-}
-
-function getOptimizedImageUrl(src, width = '400') {
-  const { imageUrl, ext } = parseImageUrl(src);
-  if (!imageUrl) return '';
-  return `${imageUrl}?width=${width}&format=${ext}&optimize=medium`;
-}
-
-function createOptimizedPicture(src, alt = '', eager = false, breakpoints = [
-  { media: '(min-width: 600px)', width: '2000' },
-  { width: '750' },
-]) {
-  const { imageUrl, ext } = parseImageUrl(src);
-  if (!imageUrl) {
-    return document.createElement('picture');
-  }
-
-  const picture = document.createElement('picture');
-
-  breakpoints.forEach((br) => {
-    const source = document.createElement('source');
-    if (br.media) source.setAttribute('media', br.media);
-    source.setAttribute('type', 'image/webp');
-    source.setAttribute('srcset', `${imageUrl}?width=${br.width}&format=webply&optimize=medium`);
-    picture.appendChild(source);
+function createImageElement(src, alt = '', eager = false) {
+  return createTag('img', {
+    src,
+    alt,
+    loading: eager ? 'eager' : 'lazy',
   });
-
-  breakpoints.forEach((br, i) => {
-    if (i < breakpoints.length - 1) {
-      const source = document.createElement('source');
-      if (br.media) source.setAttribute('media', br.media);
-      source.setAttribute('srcset', `${imageUrl}?width=${br.width}&format=${ext}&optimize=medium`);
-      picture.appendChild(source);
-    } else {
-      const img = document.createElement('img');
-      img.setAttribute('loading', eager ? 'eager' : 'lazy');
-      img.setAttribute('alt', alt);
-      img.setAttribute('src', `${imageUrl}?width=${br.width}&format=${ext}&optimize=medium`);
-      picture.appendChild(img);
-    }
-  });
-
-  return picture;
 }
 
 async function fetchData(url) {
@@ -202,28 +149,20 @@ function updateCardWithImage(card, item, eager = false) {
   const overlayText = card.querySelector('.pre-yt-overlay-text');
 
   // Add image
-  const picture = createOptimizedPicture(
-    item.image,
-    item.altText,
-    eager,
-    [{ width: '400' }],
-  );
+  const img = createImageElement(item.image, item.altText, eager);
 
-  const img = picture.querySelector('img');
-  if (img) {
-    if (img.complete) {
+  if (img.complete) {
+    card.classList.remove('shimmer');
+  } else {
+    img.addEventListener('load', () => {
       card.classList.remove('shimmer');
-    } else {
-      img.addEventListener('load', () => {
-        card.classList.remove('shimmer');
-      });
-      img.addEventListener('error', () => {
-        card.classList.remove('shimmer');
-      });
-    }
+    });
+    img.addEventListener('error', () => {
+      card.classList.remove('shimmer');
+    });
   }
 
-  imageWrapper.append(picture);
+  imageWrapper.append(img);
 
   // Update button href
   if (button && item.deepLinkUrl) {
@@ -237,7 +176,7 @@ function updateCardWithImage(card, item, eager = false) {
 
   // Add video if available
   if (item.video && videoWrapper) {
-    const posterUrl = getOptimizedImageUrl(item.image, '400');
+    const posterUrl = item.image;
     const video = createTag('video', {
       src: item.video,
       poster: posterUrl,
