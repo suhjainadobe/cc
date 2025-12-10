@@ -155,12 +155,6 @@ function createInfoButton() {
 function createEditButton(buttonText) {
   const button = createTag('a', { class: 'pre-yt-button' });
   button.textContent = buttonText;
-
-  // Hide button if NOT iPhone and NOT iPad
-  if (!shouldShowEditButton) {
-    button.style.display = 'none';
-  }
-
   return button;
 }
 
