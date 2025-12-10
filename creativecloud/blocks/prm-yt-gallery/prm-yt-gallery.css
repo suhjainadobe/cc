@@ -26,6 +26,28 @@
   background: #C5C2C2;
 }
 
+.pre-yt-card .pre-yt-free-tag {
+  display: flex;
+  position: absolute;
+  top: 16px;
+  right: 0;
+  background: var(--color-white);
+  color: var(--color-black);
+  box-sizing: border-box;
+  font-weight: 400;
+  line-height: 1.5em;
+  width: 23.33px;
+  height: 13.58px;
+  font-size: 7.23px;
+  padding: 1.03px 5.17px 1.55px 5.17px;
+  border-radius: 2.07px 0 0 2.07px;
+  
+}
+
+.pre-yt-card.expanded .pre-yt-free-tag {
+  display: none;
+}
+
 /* Mobile: Column 2 cards (2, 4, 6, 8, 10) offset by -55px */
 .pre-yt-card:nth-child(2n) {
   transform: translateY(-55px);
@@ -257,6 +279,14 @@
     line-height: 22.164px
   }
 
+  .pre-yt-card .pre-yt-free-tag {
+    width: 33.77px;
+    height: 19.69px;
+    font-size: 10.34px;
+    padding: 1.48px 7.38px 2.22px 7.38px;
+    border-radius: 2.95px 0 0 2.95px;
+  }
+
   /* Tablet overlay styles */
   /* .pre-yt-card .pre-yt-overlay-text {
     font-size: 16px;
@@ -293,6 +323,14 @@
 
   .pre-yt-card .pre-yt-button {
     display: none;
+  }
+
+  .pre-yt-card .pre-yt-free-tag {
+    width: 45px;
+    height: 26px;
+    font-size: 14px;
+    padding: 2px 10px 3px 10px;
+    border-radius: 4px 0 0 4px;
   }
 
   /* Desktop overlay styles */

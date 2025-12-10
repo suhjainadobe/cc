@@ -325,6 +325,12 @@ function renderShimmerGrid(container, buttonText, vpCardLimit) {
   }
 }
 
+function setupFreeTag(container) {
+  const freeTag = createTag('div', { class: 'pre-yt-free-tag' });
+  freeTag.textContent = 'Free'; //get from api
+  container.append(freeTag);
+}
+
 function updateCardsWithData(container, data, vpCardLimit) {
   const cards = container.querySelectorAll('.pre-yt-card');
   const rawItems = data?.files?.slice(0, vpCardLimit) || [];
@@ -333,9 +339,9 @@ function updateCardsWithData(container, data, vpCardLimit) {
       const item = normalizeItem(rawItem);
       const eager = index < 6;
       updateCardWithImage(cards[index], item, eager);
+      setupFreeTag(cards[index]);
     }
   });
-
   // Setup hover behavior after cards are updated
   setupVideoHoverBehavior(container);
 }
