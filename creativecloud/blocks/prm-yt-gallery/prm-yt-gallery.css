@@ -78,7 +78,7 @@
   top: 0;
   left: 0;
   opacity: 0;
-  transition: opacity 0.2s ease-out;
+  /* transition: opacity 0.2s ease-out; */
 }
 
 .pre-yt-card .video-wrapper video {
@@ -105,7 +105,7 @@
   white-space: nowrap;
   z-index: 2;
   opacity: 0;
-  transition: opacity 0.2s ease-out;
+  /* transition: opacity 0.2s ease-out; */
   line-height: 15px
 }
 
