@@ -9,7 +9,6 @@
 .pre-yt-grid {
   display: grid;
   grid-template-columns: repeat(2, 143px);
-  grid-template-rows: repeat(5, 252px);
   column-gap: 16px;
   row-gap: 15px;
   /* padding-top: 55px; */
@@ -194,11 +193,6 @@
   z-index: 4;
 }
 
-/* Hide cards 11-15 on mobile (show only 10) */
-.pre-yt-card:nth-child(n+11) {
-  display: none;
-}
-
 /* Shimmer effect */
 .pre-yt-card.shimmer .image-wrapper {
   background-color: #e0e0e0;
@@ -232,7 +226,6 @@
 @media (min-width: 600px) {
   .pre-yt-grid {
     grid-template-columns: repeat(3, 203px);
-    grid-template-rows: repeat(3, 361px);
   }
 
   .pre-yt-card {
@@ -256,14 +249,6 @@
     height: 393px;
   }
 
-  /* Reset mobile hiding, hide cards 10-15 on tablet (show only 9) */
-  .pre-yt-card:nth-child(n+11) {
-    display: block;
-  }
-
-  .pre-yt-card:nth-child(n+10) {
-    display: none;
-  }
 
   .pre-yt-card .pre-yt-button {
     font-size: 18px;
@@ -282,7 +267,6 @@
 @media (min-width: 1200px) {
   .pre-yt-grid {
     grid-template-columns: repeat(5, 275px);
-    grid-template-rows: repeat(3, 489px);
   }
 
   .pre-yt-card {
@@ -307,10 +291,6 @@
     height: 521px;
   }
 
-  /* Show all 15 cards on desktop */
-  .pre-yt-card:nth-child(n+10) {
-    display: block;
-  }
 
   .pre-yt-card .pre-yt-button {
     display: none;

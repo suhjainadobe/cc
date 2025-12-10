@@ -1,8 +1,8 @@
-import { createTag } from '../../scripts/utils.js';
-
-const CARD_LIMIT = 15;
+import { createTag, getScreenSizeCategory } from '../../scripts/utils.js';
 const ADOBE_STOCK_API_KEY = 'PrX-iOS';
 const ADOBE_STOCK_PRODUCT = 'Squirrel Mobile/1.0.0';
+const COLUMNS = { desktop: 5, tablet: 3, mobile: 2 };
+const ROW_HEIGHTS = { desktop: '489px', tablet: '361px', mobile: '252px' };
 
 /**
  * Cleans URL by removing escaped forward slashes.
@@ -10,6 +10,12 @@ const ADOBE_STOCK_PRODUCT = 'Squirrel Mobile/1.0.0';
 function cleanUrl(url) {
   if (!url) return '';
   return url.replace(/\\\//g, '/');
+}
+
+function updateGridLayout(grid, rowCount, viewport) {
+  const rows = rowCount[viewport];
+  const rowHeight = ROW_HEIGHTS[viewport];
+  grid.style.gridTemplateRows = `repeat(${rows}, ${rowHeight})`;
 }
 
 /**
@@ -36,11 +42,11 @@ function createImageElement(src, alt = '', eager = false) {
 /**
  * Fetches data from Adobe Stock API with required headers.
  */
-async function fetchAdobeStockData(config) {
+async function fetchAdobeStockData(config, vpCardLimit) {
   const {
     collectionId,
     offset = 0,
-    limit = CARD_LIMIT,
+    limit = vpCardLimit,
   } = config;
 
   try {
@@ -80,6 +86,7 @@ function parseBlockProps(block) {
   const props = {
     collectionId: null,
     buttonText: 'Edit this template',
+    rowCount: { desktop: 3, tablet: 3, mobile: 5 },
   };
 
   const rows = Array.from(block.children);
@@ -107,6 +114,23 @@ function parseBlockProps(block) {
       const buttonTextValue = cols[1].textContent.trim();
       if (buttonTextValue) {
         props.buttonText = buttonTextValue;
+      }
+    }
+  }
+
+  if (rows.length > 2) {
+    const cols = rows[2].querySelectorAll('div');
+    if (cols.length >= 2) {
+      const rowCountValue = cols[1].textContent.trim();
+      if (rowCountValue) {
+        const parts = rowCountValue.split('|').map((part) => parseInt(part.trim(), 10));
+        if (parts.length >= 3 && parts.every((num) => !Number.isNaN(num))) {
+          props.rowCount = {
+            desktop: parts[2],
+            tablet: parts[1],
+            mobile: parts[0],
+          };
+        }
       }
     }
   }
@@ -290,15 +314,15 @@ function setupVideoHoverBehavior(container) {
   });
 }
 
-function renderShimmerGrid(container, buttonText) {
-  for (let i = 0; i < CARD_LIMIT; i += 1) {
+function renderShimmerGrid(container, buttonText, vpCardLimit) {
+  for (let i = 0; i < vpCardLimit; i += 1) {
     container.append(createShimmerCard(buttonText));
   }
 }
 
-function updateCardsWithData(container, data) {
+function updateCardsWithData(container, data, vpCardLimit) {
   const cards = container.querySelectorAll('.pre-yt-card');
-  const rawItems = data?.files?.slice(0, CARD_LIMIT) || [];
+  const rawItems = data?.files?.slice(0, vpCardLimit) || [];
   rawItems.forEach((rawItem, index) => {
     if (cards[index]) {
       const item = normalizeItem(rawItem);
@@ -314,12 +338,17 @@ function updateCardsWithData(container, data) {
 export default function init(el) {
   const props = parseBlockProps(el);
   el.innerHTML = '';
-
+  const viewport = getScreenSizeCategory({ mobile: 599, tablet: 1199 });
+  const vpCardLimit = props.rowCount[viewport] * COLUMNS[viewport];
   const grid = createTag('div', { class: 'pre-yt-grid' });
   el.append(grid);
 
-  // Render shimmer placeholders
-  renderShimmerGrid(grid, props.buttonText);
+  
+  // Set initial grid layout based on current viewport
+  updateGridLayout(grid, props.rowCount, viewport);
+
+  // Render shimmer placeholders (renders max cards needed across all viewports)
+  renderShimmerGrid(grid, props.buttonText, vpCardLimit);
 
   if (!props.collectionId) {
     window.lana?.log('Collection ID is required for prm-yt-gallery', { tags: 'prm-yt-gallery' });
@@ -331,9 +360,9 @@ export default function init(el) {
     collectionId: props.collectionId,
     offset: 0,
     limit: 96,
-  }).then((data) => {
+  }, vpCardLimit).then((data) => {
     if (data) {
-      updateCardsWithData(grid, data);
+      updateCardsWithData(grid, data, vpCardLimit);
     }
   });
 }
