@@ -145,13 +145,13 @@
 /* Info button - only visible when expanded */
 .pre-yt-card-inner .pre-yt-info-button {
   position: absolute;
-  right: 13.9px;
+  left: 13.9px;
   top: 11.227px;
-  width: 22px;
+  width: 31.35px;
   height: 22px;
   padding: 0;
   border: none;
-  background: transparent;
+  background: #f3f3f3;
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.2s ease-out;
@@ -159,6 +159,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 11px;
 }
 
 .pre-yt-card.expanded .pre-yt-info-button {
@@ -167,6 +168,29 @@
 
 /* Hide info button when info overlay is visible */
 .pre-yt-card.info-visible .pre-yt-info-button {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pre-yt-card-inner .pre-yt-close-card-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 31.35px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  background: #f3f3f3;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+  border-radius: 11px;
+}
+
+/* Hide close card button when info overlay is visible */
+.pre-yt-card.info-visible .pre-yt-close-card-button {
   opacity: 0;
   pointer-events: none;
 }
@@ -199,8 +223,8 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  width: 24px;
-  height: 24px;
+  width: 31.35px;
+  height: 22px;
   padding: 0;
   border: none;
   background: transparent;
@@ -294,6 +318,16 @@
     border-radius: 2.95px 0 0 2.95px;
   }
 
+  .pre-yt-card-inner .pre-yt-info-button {
+    position: absolute;
+    right: 13.9px;
+    left: unset;
+ }
+
+ .pre-yt-card-inner .pre-yt-close-card-button {
+    display: none;
+  }
+
   /* Tablet overlay styles */
   /* .pre-yt-card .pre-yt-overlay-text {
     font-size: 16px;
@@ -324,7 +358,8 @@
     transform: scale(1.116);
   }
 
-  .pre-yt-card-inner .pre-yt-button {
+  .pre-yt-card-inner .pre-yt-button,
+  .pre-yt-card-inner .pre-yt-close-card-button {
     display: none;
   }
 

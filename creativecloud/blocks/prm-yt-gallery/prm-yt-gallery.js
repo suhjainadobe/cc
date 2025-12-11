@@ -142,11 +142,34 @@ function createInfoButton() {
     type: 'button',
   });
   infoButton.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <circle cx="10" cy="10" r="9" stroke="white" stroke-width="1.5" fill="none"/>
-      <text x="10" y="14" text-anchor="middle" fill="white" font-size="11" font-weight="600" font-family="Arial, sans-serif">i</text>
-    </svg>`;
+  <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15.6752 15.7781C12.8886 15.7781 10.6221 13.5116 10.6221 10.725C10.6221 7.93845 12.8886 5.67188 15.6752 5.67188C18.4617 5.67188 20.7283 7.93845 20.7283 10.725C20.7283 13.5116 18.4617 15.7781 15.6752 15.7781ZM15.6752 6.53812C13.3663 6.53812 11.4883 8.41613 11.4883 10.725C11.4883 13.0339 13.3663 14.9119 15.6752 14.9119C17.9841 14.9119 19.8621 13.0339 19.8621 10.725C19.8621 8.41613 17.9841 6.53812 15.6752 6.53812Z" fill="#292929"/>
+    <path d="M15.6756 7.98826C15.8088 7.98357 15.9386 8.03092 16.0375 8.12029C16.2282 8.33111 16.2282 8.65218 16.0375 8.863C15.9397 8.95454 15.8095 9.00338 15.6756 8.99873C15.5391 9.00421 15.4065 8.95233 15.31 8.85566C15.2164 8.7587 15.1661 8.62794 15.1706 8.49325C15.1635 8.35755 15.2108 8.22462 15.3021 8.12399C15.4024 8.02886 15.5377 7.97969 15.6756 7.98826Z" fill="#292929"/>
+    <path d="M15.6753 13.6487C15.4362 13.6487 15.2422 13.4547 15.2422 13.2155V10.4234C15.2422 10.1842 15.4362 9.99023 15.6753 9.99023C15.9144 9.99023 16.1084 10.1842 16.1084 10.4234V13.2155C16.1084 13.4547 15.9144 13.6487 15.6753 13.6487Z" fill="#292929"/>
+  </svg>`;
   return infoButton;
+}
+
+/**
+ * Creates the close button (X) for the card.
+ */
+function createCloseCardButton(card) {
+  const closeCardButton = createTag('button', {
+    class: 'pre-yt-close-card-button',
+    'aria-label': 'Close card',
+    type: 'button',
+  });
+  closeCardButton.innerHTML = `
+   <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16.2883 10.7253L19.2951 7.71885C19.4643 7.54966 19.4643 7.27557 19.2951 7.10638C19.1259 6.93719 18.8518 6.93719 18.6826 7.10638L15.6758 10.1129L12.669 7.10638C12.4999 6.93719 12.2258 6.93719 12.0566 7.10638C11.8874 7.27557 11.8874 7.54966 12.0566 7.71885L15.0633 10.7253L12.0566 13.7318C11.8874 13.901 11.8874 14.1751 12.0566 14.3443C12.1412 14.4289 12.252 14.4712 12.3628 14.4712C12.4736 14.4712 12.5844 14.4289 12.669 14.3443L15.6758 11.3378L18.6826 14.3443C18.7672 14.4289 18.878 14.4712 18.9888 14.4712C19.0996 14.4712 19.2105 14.4289 19.2951 14.3443C19.4642 14.1751 19.4642 13.901 19.2951 13.7318L16.2883 10.7253Z" fill="#292929"/>
+   </svg>`;
+
+  closeCardButton.addEventListener('click', (event) => {
+    event.stopPropagation();
+    card.classList.remove('expanded');
+    });
+
+  return closeCardButton;
 }
 
 /**
@@ -168,9 +191,10 @@ function createCloseButton() {
     type: 'button',
   });
   closeButton.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M12 4L4 12M4 4L12 12" stroke="white" stroke-width="2" stroke-linecap="round"/>
-    </svg>`;
+  <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="31" height="22" rx="11" fill="white"/>
+    <path d="M16.2883 10.7253L19.2951 7.71885C19.4643 7.54966 19.4643 7.27557 19.2951 7.10638C19.1259 6.93719 18.8518 6.93719 18.6826 7.10638L15.6758 10.1129L12.669 7.10638C12.4999 6.93719 12.2258 6.93719 12.0566 7.10638C11.8874 7.27557 11.8874 7.54966 12.0566 7.71885L15.0633 10.7253L12.0566 13.7318C11.8874 13.901 11.8874 14.1751 12.0566 14.3443C12.1412 14.4289 12.252 14.4712 12.3628 14.4712C12.4736 14.4712 12.5844 14.4289 12.669 14.3443L15.6758 11.3378L18.6826 14.3443C18.7672 14.4289 18.878 14.4712 18.9888 14.4712C19.0996 14.4712 19.2105 14.4289 19.2951 14.3443C19.4642 14.1751 19.4642 13.901 19.2951 13.7318L16.2883 10.7253Z" fill="#292929"/>
+  </svg>`;
   return closeButton;
 }
 
@@ -206,6 +230,7 @@ function createShimmerCard(buttonText) {
   const shouldShowEditButton = isIOSDevice();
 
   videoWrapper.append(createInfoButton());
+  videoWrapper.append(createCloseCardButton(card));
   if (shouldShowEditButton) {
     videoWrapper.append(createEditButton(buttonText));
   }
