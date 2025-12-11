@@ -20,7 +20,7 @@ function normalizeItem(apiItem) {
   return {
     image: cleanUrl(apiItem.thumbnail_url || ''),
     altText: apiItem.title || 'test text for now',
-    deepLinkUrl: apiItem.deep_link_url || '', // yet to be implemented
+    deepLinkUrl: apiItem.id || '', // yet to be implemented
     video: cleanUrl(apiItem.video_preview_url || ''),
   };
 }
@@ -80,7 +80,7 @@ function parseBlockProps(block) {
   const props = {
     collectionId: null,
     buttonText: 'Edit this template',
-    rowCount: { desktop: 3, tablet: 3, mobile: 5 },
+    // rowCount: { desktop: 3, tablet: 3, mobile: 5 },
   };
 
   const rows = Array.from(block.children);
@@ -112,22 +112,22 @@ function parseBlockProps(block) {
     }
   }
 
-  if (rows.length > 2) {
-    const cols = rows[2].querySelectorAll('div');
-    if (cols.length >= 2) {
-      const rowCountValue = cols[1].textContent.trim();
-      if (rowCountValue) {
-        const parts = rowCountValue.split('|').map((part) => parseInt(part.trim(), 10));
-        if (parts.length >= 3 && parts.every((num) => !Number.isNaN(num))) {
-          props.rowCount = {
-            desktop: parts[2],
-            tablet: parts[1],
-            mobile: parts[0],
-          };
-        }
-      }
-    }
-  }
+  // if (rows.length > 2) {
+  //   const cols = rows[2].querySelectorAll('div');
+  //   if (cols.length >= 2) {
+  //     const rowCountValue = cols[1].textContent.trim();
+  //     if (rowCountValue) {
+  //       const parts = rowCountValue.split('|').map((part) => parseInt(part.trim(), 10));
+  //       if (parts.length >= 3 && parts.every((num) => !Number.isNaN(num))) {
+  //         props.rowCount = {
+  //           desktop: parts[2],
+  //           tablet: parts[1],
+  //           mobile: parts[0],
+  //         };
+  //       }
+  //     }
+  //   }
+  // }
 
   return props;
 }
