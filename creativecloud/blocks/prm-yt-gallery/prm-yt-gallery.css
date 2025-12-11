@@ -19,11 +19,22 @@
 .pre-yt-card {
   width: 100%;
   aspect-ratio: 1 / 1.76;
+  position: relative;
+  overflow: visible;
+}
+
+/* Inner wrapper that scales on hover */
+.pre-yt-card-inner {
+  width: 100%;
+  height: 100%;
   border-radius: 18px;
   overflow: hidden;
-  position: relative;
-  transition: transform 0.2s ease-out;
+  position: absolute;
+  top: 0;
+  left: 0;
   background: #C5C2C2;
+  transition: transform 0.2s ease-out;
+  transform-origin: center center;
 }
 
 .pre-yt-card .pre-yt-free-tag {
@@ -41,7 +52,7 @@
   font-size: 7.23px;
   padding: 1.03px 5.17px 1.55px 5.17px;
   border-radius: 2.07px 0 0 2.07px;
-  
+  z-index: 5;
 }
 
 .pre-yt-card.expanded .pre-yt-free-tag {
@@ -54,7 +65,7 @@
 }
 
 /* Image wrapper - default state */
-.pre-yt-card .image-wrapper {
+.pre-yt-card-inner .image-wrapper {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -62,8 +73,8 @@
   left: 0;
 }
 
-.pre-yt-card .image-wrapper picture,
-.pre-yt-card .image-wrapper img {
+.pre-yt-card-inner .image-wrapper picture,
+.pre-yt-card-inner .image-wrapper img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -71,7 +82,7 @@
 }
 
 /* Video wrapper - shown on hover */
-.pre-yt-card .video-wrapper {
+.pre-yt-card-inner .video-wrapper {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -81,7 +92,7 @@
   /* transition: opacity 0.2s ease-out; */
 }
 
-.pre-yt-card .video-wrapper video {
+.pre-yt-card-inner .video-wrapper video {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -89,7 +100,7 @@
 }
 
 /* Button on hover */
-.pre-yt-card .pre-yt-button {
+.pre-yt-card-inner .pre-yt-button {
   position: absolute;
   bottom: 40px;
   left: 50%;
@@ -112,12 +123,11 @@
 /* Expanded state on hover - scale by ~1.224 (143 -> 175, 252 -> 284) */
 .pre-yt-card.expanded {
   z-index: 1;
-  transform: scale(1.224);
-  border: 2px solid #fff;
 }
 
-.pre-yt-card.expanded:nth-child(2n) {
-  transform: translateY(-55px) scale(1.224);
+.pre-yt-card.expanded .pre-yt-card-inner {
+  transform: scale(1.224);
+  border: 2px solid #fff;
 }
 
 .pre-yt-card.expanded .image-wrapper {
@@ -133,7 +143,7 @@
 }
 
 /* Info button - only visible when expanded */
-.pre-yt-card .pre-yt-info-button {
+.pre-yt-card-inner .pre-yt-info-button {
   position: absolute;
   right: 13.9px;
   top: 11.227px;
@@ -162,7 +172,7 @@
 }
 
 /* Info overlay */
-.pre-yt-card .pre-yt-info-overlay {
+.pre-yt-card-inner .pre-yt-info-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -185,7 +195,7 @@
 }
 
 /* Close button */
-.pre-yt-card .pre-yt-overlay-close {
+.pre-yt-card-inner .pre-yt-overlay-close {
   position: absolute;
   top: 12px;
   right: 12px;
@@ -202,7 +212,7 @@
 }
 
 /* Overlay text */
-.pre-yt-card .pre-yt-overlay-text {
+.pre-yt-card-inner .pre-yt-overlay-text {
   flex: 1;
   color: #fff;
   font-size: 18px;
@@ -218,7 +228,7 @@
 }
 
 /* Shimmer effect */
-.pre-yt-card.shimmer .image-wrapper {
+.pre-yt-card.shimmer .pre-yt-card-inner .image-wrapper {
   background-color: #e0e0e0;
   background-image: linear-gradient(
     90deg,
@@ -233,7 +243,7 @@
 }
 
 /* Hide image while loading so shimmer is visible */
-.pre-yt-card.shimmer .image-wrapper img {
+.pre-yt-card.shimmer .pre-yt-card-inner .image-wrapper img {
   opacity: 0;
 }
 
@@ -265,20 +275,11 @@
   }
 
   /* Expanded state - Tablet: scale by ~1.158 (203 -> 235, 361 -> 393) */
-  .pre-yt-card.expanded {
+  .pre-yt-card.expanded .pre-yt-card-inner {
     transform: scale(1.158);
   }
 
-  /* Reset mobile expanded offset (2n) */
-  .pre-yt-card.expanded:nth-child(2n) {
-    transform: scale(1.158);
-  }
-
-  .pre-yt-card.expanded:nth-child(3n+2) {
-    transform: translateY(-55px) scale(1.158);
-  }
-
-  .pre-yt-card .pre-yt-button {
+  .pre-yt-card-inner .pre-yt-button {
     font-size: 18px;
     padding: 6px 21px;
     border-radius: 23px;
@@ -319,22 +320,11 @@
   }
 
   /* Expanded state - Desktop: scale by ~1.116 (275 -> 307, 489 -> 521) */
-  .pre-yt-card.expanded {
+  .pre-yt-card.expanded .pre-yt-card-inner {
     transform: scale(1.116);
   }
 
-  /* Reset mobile (2n) and tablet (3n+2) expanded offsets */
-  .pre-yt-card.expanded:nth-child(2n),
-  .pre-yt-card.expanded:nth-child(3n+2) {
-    transform: scale(1.116);
-  }
-
-  .pre-yt-card.expanded:nth-child(5n+2),
-  .pre-yt-card.expanded:nth-child(5n+4) {
-    transform: translateY(-55px) scale(1.116);
-  }
-
-  .pre-yt-card .pre-yt-button {
+  .pre-yt-card-inner .pre-yt-button {
     display: none;
   }
 

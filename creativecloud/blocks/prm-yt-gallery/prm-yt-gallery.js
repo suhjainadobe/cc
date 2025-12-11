@@ -205,6 +205,7 @@ function isIOSDevice() {
  */
 function createShimmerCard(buttonText) {
   const card = createTag('div', { class: 'pre-yt-card shimmer' });
+  const cardInner = createTag('div', { class: 'pre-yt-card-inner' });
   const imageWrapper = createTag('div', { class: 'image-wrapper' });
   const videoWrapper = createTag('div', { class: 'video-wrapper' });
   const shouldShowEditButton = isIOSDevice();
@@ -215,8 +216,9 @@ function createShimmerCard(buttonText) {
   }
   videoWrapper.append(createInfoOverlay());
 
-  card.append(imageWrapper);
-  card.append(videoWrapper);
+  cardInner.append(imageWrapper);
+  cardInner.append(videoWrapper);
+  card.append(cardInner);
   return card;
 }
 
@@ -335,7 +337,7 @@ function renderShimmerGrid(container, buttonText, vpCardLimit) {
 
 function setupFreeTag(container) {
   const freeTag = createTag('div', { class: 'pre-yt-free-tag' });
-  freeTag.textContent = 'Free'; //get from api
+  freeTag.textContent = 'Free'; // get from api
   container.append(freeTag);
 }
 
