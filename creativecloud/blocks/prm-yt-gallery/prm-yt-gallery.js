@@ -27,6 +27,7 @@ function normalizeItem(apiItem) {
     altText: apiItem.title || 'test text for now',
     deepLinkUrl: createTemplateID(apiItem.id) || '',
     video: cleanUrl(apiItem.video_preview_url || ''),
+    isFree: apiItem.is_free || false,
   };
 }
 
@@ -85,7 +86,7 @@ function parseBlockProps(block) {
   const props = {
     collectionId: null,
     buttonText: 'Edit this template',
-    // rowCount: { desktop: 3, tablet: 3, mobile: 5 },
+    freeTagText: 'Free',
   };
 
   const rows = Array.from(block.children);
@@ -117,22 +118,16 @@ function parseBlockProps(block) {
     }
   }
 
-  // if (rows.length > 2) {
-  //   const cols = rows[2].querySelectorAll('div');
-  //   if (cols.length >= 2) {
-  //     const rowCountValue = cols[1].textContent.trim();
-  //     if (rowCountValue) {
-  //       const parts = rowCountValue.split('|').map((part) => parseInt(part.trim(), 10));
-  //       if (parts.length >= 3 && parts.every((num) => !Number.isNaN(num))) {
-  //         props.rowCount = {
-  //           desktop: parts[2],
-  //           tablet: parts[1],
-  //           mobile: parts[0],
-  //         };
-  //       }
-  //     }
-  //   }
-  // }
+  if (rows.length > 2) {
+    const thirdRow = rows[2];
+    const cols = thirdRow.querySelectorAll('div');
+    if (cols.length >= 2) {
+      const freeTagTextValue = cols[1].textContent.trim();
+      if (freeTagTextValue) {
+        props.freeTagText = freeTagTextValue;
+      }
+    }
+  }
 
   return props;
 }
@@ -335,13 +330,13 @@ function renderShimmerGrid(container, buttonText, vpCardLimit) {
   }
 }
 
-function setupFreeTag(container) {
+function setupFreeTag(container, freeTagText) {
   const freeTag = createTag('div', { class: 'pre-yt-free-tag' });
-  freeTag.textContent = 'Free'; // get from api
+  freeTag.textContent = freeTagText;
   container.append(freeTag);
 }
 
-function updateCardsWithData(container, data, vpCardLimit) {
+function updateCardsWithData(container, data, vpCardLimit, freeTagText) {
   const cards = container.querySelectorAll('.pre-yt-card');
   const rawItems = data?.files?.slice(0, vpCardLimit) || [];
   rawItems.forEach((rawItem, index) => {
@@ -349,7 +344,7 @@ function updateCardsWithData(container, data, vpCardLimit) {
       const item = normalizeItem(rawItem);
       const eager = index < 6;
       updateCardWithImage(cards[index], item, eager);
-      setupFreeTag(cards[index]);
+      if (item.isFree) setupFreeTag(cards[index], freeTagText);
     }
   });
   // Setup hover behavior after cards are updated
@@ -379,7 +374,7 @@ export default function init(el) {
     limit: 96,
   }, vpCardLimit).then((data) => {
     if (data) {
-      updateCardsWithData(grid, data, vpCardLimit);
+      updateCardsWithData(grid, data, vpCardLimit, props.freeTagText);
     }
   });
 }
