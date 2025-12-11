@@ -12,6 +12,11 @@ function cleanUrl(url) {
   return url.replace(/\\\//g, '/');
 }
 
+function createTemplateID(tempID) {
+  const id = `https://premierepro.app.link/1RdAjG4WyYb?template_id=${tempID}`;
+  return id;
+}
+
 /**
  * Normalizes API item to consistent internal structure.
  * Update this mapping if API keys change.
@@ -20,7 +25,7 @@ function normalizeItem(apiItem) {
   return {
     image: cleanUrl(apiItem.thumbnail_url || ''),
     altText: apiItem.title || 'test text for now',
-    deepLinkUrl: apiItem.id || '', // yet to be implemented
+    deepLinkUrl: createTemplateID(apiItem.id) || '',
     video: cleanUrl(apiItem.video_preview_url || ''),
   };
 }
