@@ -86,7 +86,7 @@ function parseBlockProps(block) {
   const props = {
     collectionId: null,
     buttonText: 'Edit this template',
-    freeTagText: 'Free',
+    freeTagText: null,
   };
 
   const rows = Array.from(block.children);
@@ -332,7 +332,7 @@ function renderShimmerGrid(container, buttonText, vpCardLimit) {
 
 function setupFreeTag(container, freeTagText) {
   const freeTag = createTag('div', { class: 'pre-yt-free-tag' });
-  freeTag.textContent = freeTagText;
+  if (freeTagText) freeTag.textContent = freeTagText;
   container.append(freeTag);
 }
 
