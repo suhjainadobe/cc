@@ -11,7 +11,7 @@
   grid-template-columns: repeat(2, minmax(min-content, 143px));
   column-gap: 16px;
   row-gap: 15px;
-  padding: 90px 80px 80px;
+  padding: 90px 20px 80px;
   max-width: calc((143px * 2) + 16px + 40px); /* 2 cards + gap + padding */
   margin: 0 auto;
 }
@@ -251,6 +251,7 @@
   .pre-yt-grid {
     grid-template-columns: repeat(3, minmax(min-content, 203px));
     max-width: calc((203px * 3) + (16px * 2) + 40px); /* 3 cards + gaps + padding */
+    padding: 90px 20px 80px;
   }
 
   /* Reset mobile offset (2n) */
@@ -303,6 +304,7 @@
   .pre-yt-grid {
     grid-template-columns: repeat(5, minmax(min-content, 275px));
     max-width: calc((275px * 5) + (16px * 4) + 40px); /* 5 cards + gaps + padding */
+    padding: 90px 80px 80px;
   }
 
   /* Reset tablet offset (3n+2) */

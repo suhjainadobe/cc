@@ -300,8 +300,11 @@ function setupVideoHoverBehavior(container) {
       // Don't play video if info overlay is visible
       if (video && !card.classList.contains('info-visible')) {
         video.currentTime = 0;
-        video.play().catch(() => {
-          // Ignore autoplay errors
+        video.addEventListener('canplay', () => {
+          video.style.opacity = 1;
+          video.play().catch(() => {
+            // Ignore autoplay errors
+          });
         });
       }
     });
