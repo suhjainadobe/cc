@@ -120,13 +120,13 @@
   line-height: 15px
 }
 
-/* Expanded state on hover - scale by ~1.224 (143 -> 175, 252 -> 284) */
+/* Expanded state on hover - scale by ~1.161 (143 -> 166, 252 -> 293) */
 .pre-yt-card.expanded {
   z-index: 1;
 }
 
 .pre-yt-card.expanded .pre-yt-card-inner {
-  transform: scale(1.224);
+  transform: scale(1.161);
   border: 2px solid #fff;
 }
 
