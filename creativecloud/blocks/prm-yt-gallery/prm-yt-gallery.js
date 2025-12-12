@@ -315,11 +315,8 @@ function setupVideoHoverBehavior(container) {
       // Don't play video if info overlay is visible
       if (video && !card.classList.contains('info-visible')) {
         video.currentTime = 0;
-        video.addEventListener('canplay', () => {
-          video.style.opacity = 1;
-          video.play().catch(() => {
-            // Ignore autoplay errors
-          });
+        video.play().catch(() => {
+          // Ignore autoplay errors
         });
       }
     });
@@ -365,7 +362,7 @@ function updateCardsWithData(container, data, vpCardLimit, freeTagText) {
 }
 
 export default function init(el) {
-  const props = parseBlockProps(el);
+  const blockProps = parseBlockProps(el);
   el.innerHTML = '';
   const viewport = getScreenSizeCategory({ mobile: 599, tablet: 1199 });
   const vpCardLimit = CARD_LIMIT[viewport];
@@ -373,21 +370,21 @@ export default function init(el) {
   el.append(grid);
 
   // Render shimmer placeholders (renders max cards needed across all viewports)
-  renderShimmerGrid(grid, props.buttonText, vpCardLimit);
+  renderShimmerGrid(grid, blockProps.buttonText, vpCardLimit);
 
-  if (!props.collectionId) {
+  if (!blockProps.collectionId) {
     window.lana?.log('Collection ID is required for prm-yt-gallery', { tags: 'prm-yt-gallery' });
     return;
   }
 
   // Fetch data from Adobe Stock API
   fetchAdobeStockData({
-    collectionId: props.collectionId,
+    collectionId: blockProps.collectionId,
     offset: 0,
     limit: 96,
   }, vpCardLimit).then((data) => {
     if (data) {
-      updateCardsWithData(grid, data, vpCardLimit, props.freeTagText);
+      updateCardsWithData(grid, data, vpCardLimit, blockProps.freeTagText);
     }
   });
 }
