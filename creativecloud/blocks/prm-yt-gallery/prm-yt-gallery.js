@@ -197,6 +197,7 @@ function createCloseButton() {
     class: 'pre-yt-overlay-close',
     'aria-label': 'Close info',
     type: 'button',
+    tabindex: -1,
   });
   closeButton.innerHTML = `
   <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -231,17 +232,17 @@ function isIOSDevice() {
  * Creates a shimmer card placeholder with all UI elements.
  */
 function createShimmerCard(buttonText) {
-  const card = createTag('div', { class: 'pre-yt-card shimmer' });
+  const card = createTag('div', { class: 'pre-yt-card shimmer', tabindex: '0' });
   const cardInner = createTag('div', { class: 'pre-yt-card-inner' });
   const imageWrapper = createTag('div', { class: 'image-wrapper' });
   const videoWrapper = createTag('div', { class: 'video-wrapper' });
   const shouldShowEditButton = isIOSDevice();
 
-  videoWrapper.append(createInfoButton());
-  videoWrapper.append(createCloseCardButton(card));
   if (shouldShowEditButton) {
     videoWrapper.append(createEditButton(buttonText));
   }
+  videoWrapper.append(createInfoButton());
+  videoWrapper.append(createCloseCardButton(card));
   videoWrapper.append(createInfoOverlay());
 
   cardInner.append(imageWrapper);
@@ -301,7 +302,9 @@ function setupInfoOverlay(card) {
   const infoButton = card.querySelector('.pre-yt-info-button');
   const overlay = card.querySelector('.pre-yt-info-overlay');
   const closeButton = card.querySelector('.pre-yt-overlay-close');
+  const closeCardButton = card.querySelector('.pre-yt-close-card-button');
   const video = card.querySelector('.video-wrapper video');
+  const editButton = card.querySelector('.pre-yt-button');
 
   if (infoButton && overlay) {
     infoButton.addEventListener('click', (e) => {
@@ -309,6 +312,10 @@ function setupInfoOverlay(card) {
       card.classList.add('info-visible');
       if (video) {
         video.pause();
+      }
+      if (closeButton) {
+        closeButton.tabindex = 0;
+        closeButton.focus();
       }
     });
   }
@@ -319,8 +326,49 @@ function setupInfoOverlay(card) {
       card.classList.remove('info-visible');
       if (video) {
         video.play().catch(() => {
-          // Ignore autoplay errors
         });
+      }
+      if (closeButton) {
+        closeButton.tabindex = -1;
+      }
+    });
+
+    closeButton.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab' && !e.shiftKey) {
+        e.preventDefault();
+        if (editButton) {
+          card.overlayJustClosed = true;
+          editButton.focus();
+        } else if (closeCardButton) {
+          closeCardButton.focus();
+        }
+      }
+    });
+  }
+
+  if (editButton) {
+    editButton.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab' && !e.shiftKey) {
+        e.preventDefault();
+        infoButton.focus();
+      }
+    });
+  }
+
+  if (closeCardButton) {
+    closeCardButton.setAttribute('tabindex', '0');
+    closeCardButton.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab' && !e.shiftKey) {
+        const grid = card.closest('.pre-yt-grid');
+        if (grid) {
+          const cards = Array.from(grid.querySelectorAll('.pre-yt-card'));
+          const idx = cards.indexOf(card);
+          const nextCard = cards[idx + 1];
+          if (nextCard) {
+            e.preventDefault();
+            nextCard.focus();
+          }
+        }
       }
     });
   }
@@ -343,6 +391,29 @@ function setupVideoHoverBehavior(container) {
 
     card.addEventListener('mouseleave', () => {
       collapseCard(card, video);
+    });
+
+    card.addEventListener('focusin', () => {
+      card.classList.add('expanded');
+      if (video && !card.classList.contains('info-visible')) {
+        video.currentTime = 0;
+        video.addEventListener('canplay', () => {
+          video.style.opacity = 1;
+          video.play().catch(() => {
+          });
+        });
+      }
+    });
+
+    card.addEventListener('focusout', (e) => {
+      const related = e.relatedTarget;
+      if (!card.contains(related)) {
+        card.classList.remove('expanded');
+        card.classList.remove('info-visible');
+        if (video) {
+          video.pause();
+        }
+      }
     });
 
     // Setup info overlay interactions
