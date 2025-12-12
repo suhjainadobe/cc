@@ -120,6 +120,24 @@ function parseBlockProps(block) {
   return props;
 }
 
+function expandCard(card, video) {
+  card.classList.add('expanded');
+
+  if (video && !card.classList.contains('info-visible')) {
+    video.currentTime = 0;
+    video.addEventListener('canplay', () => {
+      video.style.opacity = 1;
+      video.play().catch(() => {});
+    });
+  }
+}
+
+function collapseCard(card, video) {
+  card.classList.remove('expanded');
+  card.classList.remove('info-visible');
+  if (video) video.pause();
+}
+
 /**
  * Creates the info button (ⓘ) for showing template details.
  */
@@ -154,7 +172,9 @@ function createCloseCardButton(card) {
 
   closeCardButton.addEventListener('click', (event) => {
     event.stopPropagation();
-    card.classList.remove('expanded');
+
+    const video = card.querySelector('.video-wrapper video');
+    collapseCard(card, video);
   });
 
   return closeCardButton;
@@ -307,26 +327,22 @@ function setupInfoOverlay(card) {
 }
 
 function setupVideoHoverBehavior(container) {
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
   container.querySelectorAll('.pre-yt-card').forEach((card) => {
     const video = card.querySelector('.video-wrapper video');
 
+    if (isMobile) {
+      card.addEventListener('click', () => {
+        expandCard(card, video);
+      });
+    }
     card.addEventListener('mouseenter', () => {
-      card.classList.add('expanded');
-      // Don't play video if info overlay is visible
-      if (video && !card.classList.contains('info-visible')) {
-        video.currentTime = 0;
-        video.play().catch(() => {
-          // Ignore autoplay errors
-        });
-      }
+      expandCard(card, video);
     });
 
     card.addEventListener('mouseleave', () => {
-      card.classList.remove('expanded');
-      card.classList.remove('info-visible');
-      if (video) {
-        video.pause();
-      }
+      collapseCard(card, video);
     });
 
     // Setup info overlay interactions
