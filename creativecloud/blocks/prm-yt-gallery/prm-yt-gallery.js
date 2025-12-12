@@ -3,6 +3,11 @@ import { createTag, getScreenSizeCategory } from '../../scripts/utils.js';
 const CARD_LIMIT = { desktop: 15, tablet: 9, mobile: 10 };
 const ADOBE_STOCK_API_KEY = 'milo-prm-yt-gallery';
 const ADOBE_STOCK_PRODUCT = 'creativecloud';
+const props = {
+  collectionId: null,
+  buttonText: 'Edit this template',
+  freeTagText: null,
+};
 
 /**
  * Cleans URL by removing escaped forward slashes.
@@ -81,53 +86,36 @@ async function fetchAdobeStockData(config, vpCardLimit) {
 
 /**
  * Parses block properties from the authoring table.
+ * Reads properties based on label names (case-insensitive), independent of row order.
  */
 function parseBlockProps(block) {
-  const props = {
-    collectionId: null,
-    buttonText: 'Edit this template',
-    freeTagText: null,
-  };
-
   const rows = Array.from(block.children);
 
-  // First row: collectionID | Collection ID value
-  if (rows.length > 0) {
-    const firstRow = rows[0];
-    const cols = firstRow.querySelectorAll('div');
-
+  rows.forEach((row) => {
+    const cols = row.querySelectorAll('div');
     if (cols.length >= 2) {
       const label = cols[0].textContent.trim().toLowerCase();
       const value = cols[1].textContent.trim();
 
-      if (label === 'collectionid' && value) {
-        props.collectionId = value;
-      }
-    }
-  }
+      if (!value) return;
 
-  // Second row: button-text | Button text value
-  if (rows.length > 1) {
-    const secondRow = rows[1];
-    const cols = secondRow.querySelectorAll('div');
-    if (cols.length >= 2) {
-      const buttonTextValue = cols[1].textContent.trim();
-      if (buttonTextValue) {
-        props.buttonText = buttonTextValue;
+      switch (label) {
+        case 'collectionid':
+          props.collectionId = value;
+          break;
+        case 'button':
+        case 'button-text':
+          props.buttonText = value;
+          break;
+        case 'free-tag-text':
+          props.freeTagText = value;
+          break;
+        default:
+          // Ignore unknown labels
+          break;
       }
     }
-  }
-
-  if (rows.length > 2) {
-    const thirdRow = rows[2];
-    const cols = thirdRow.querySelectorAll('div');
-    if (cols.length >= 2) {
-      const freeTagTextValue = cols[1].textContent.trim();
-      if (freeTagTextValue) {
-        props.freeTagText = freeTagTextValue;
-      }
-    }
-  }
+  });
 
   return props;
 }
@@ -167,7 +155,7 @@ function createCloseCardButton(card) {
   closeCardButton.addEventListener('click', (event) => {
     event.stopPropagation();
     card.classList.remove('expanded');
-    });
+  });
 
   return closeCardButton;
 }
