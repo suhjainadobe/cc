@@ -5,7 +5,7 @@
   --font-size-s: 1.75rem;
   --anim-ease: linear;
 
-  font-family: var(--body-font-family);
+  font-family: "Adobe Clean Black", var(--body-font-family);
   position: relative;
 }
 
