@@ -139,6 +139,10 @@
   z-index: 2;
 }
 
+.pre-yt-card.expanded.info-visible .pre-yt-card-inner .pre-yt-button {
+  bottom: 19px;
+}
+
 .pre-yt-card-inner .pre-yt-info-button {
   position: absolute;
   left: 13.9px;
@@ -220,6 +224,7 @@
   margin: 0;
   overflow-y: auto;
   word-wrap: break-word;
+  margin-bottom: 19px;
 }
 
 /* ====================
