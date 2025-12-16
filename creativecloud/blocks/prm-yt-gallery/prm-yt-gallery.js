@@ -213,13 +213,20 @@ const createCloseButton = (className, ariaLabel, onClick, tabIndex = 0) => {
     type: 'button',
     tabIndex,
   });
-
   button.innerHTML = ICONS.close;
   button.addEventListener('click', (e) => {
     e.stopPropagation();
     onClick();
   });
-
+  if (window.screen.width > 500) {
+    button.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e?.preventDefault();
+        e?.stopPropagation();
+        onClick();
+      }
+    });
+  }
   return button;
 };
 
@@ -286,7 +293,10 @@ const createCloseCardButton = (card) => {
   return createCloseButton(
     CLASSES.CLOSE_CARD_BUTTON,
     'Close card',
-    () => collapseCard(card, video),
+    () => {
+      collapseCard(card, video);
+      if (window.screen.width > 500) { card?.querySelector('.pre-yt-info-button')?.focus(); }
+    },
   );
 };
 
@@ -449,7 +459,10 @@ const setupInfoOverlay = (card) => {
   const closeOverlayButton = createCloseButton(
     CLASSES.OVERLAY_CLOSE,
     'Close info',
-    () => hideInfoOverlay(card, video),
+    () => {
+      hideInfoOverlay(card, video);
+      if (window.screen.width > 500) { card?.querySelector('.pre-yt-info-button')?.focus(); }
+    },
     -1,
   );
   overlay.appendChild(closeOverlayButton);
