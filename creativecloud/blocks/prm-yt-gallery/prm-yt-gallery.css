@@ -225,6 +225,27 @@
   overflow-y: auto;
   word-wrap: break-word;
   margin-bottom: 19px;
+  /* Modern scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
+}
+
+/* Webkit scrollbar styling for Chrome, Safari, Edge */
+.pre-yt-card-inner .pre-yt-overlay-text::-webkit-scrollbar {
+  width: 6px;
+}
+
+.pre-yt-card-inner .pre-yt-overlay-text::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pre-yt-card-inner .pre-yt-overlay-text::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 3px;
+}
+
+.pre-yt-card-inner .pre-yt-overlay-text::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 /* ====================
