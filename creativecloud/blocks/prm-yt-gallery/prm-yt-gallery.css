@@ -101,7 +101,7 @@
   display: flex;
   position: absolute;
   top: 16px;
-  right: 0;
+  inset-inline-end: 0;
   background: var(--color-white);
   color: #2C2C2C;
   box-sizing: border-box;
@@ -111,7 +111,8 @@
   height: 13.58px;
   font-size: 7.23px;
   padding: 1.03px 5.17px 1.55px;
-  border-radius: 2.07px 0 0 2.07px;
+  border-start-start-radius: 2.07px;
+  border-end-start-radius: 2.07px;
   z-index: 5;
 }
 
@@ -369,7 +370,8 @@
     height: 19.69px;
     font-size: 10.34px;
     padding: 1.48px 7.38px 2.22px;
-    border-radius: 2.95px 0 0 2.95px;
+    border-start-start-radius: 2.95px;
+    border-end-start-radius: 2.95px;
   }
 
   /* Control button positioning */
@@ -422,6 +424,7 @@
     height: 26px;
     font-size: 14px;
     padding: 2px 10px 3px;
-    border-radius: 4px 0 0 4px;
+    border-start-start-radius: 4px;
+    border-end-start-radius: 4px;
   }
 }
