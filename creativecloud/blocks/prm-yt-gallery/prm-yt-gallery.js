@@ -385,6 +385,7 @@ const hideInfoOverlay = (card, video) => {
   if (video) {
     video.play().catch(() => {});
   }
+  card.querySelector(`.${CLASSES.OVERLAY_TEXT}`).scrollTop = 0;
 };
 
 /**
@@ -444,6 +445,7 @@ const setupInfoOverlay = (card) => {
   if (!infoButton || !overlay) return;
 
   // Create and append overlay close button
+  // chnage here
   const closeOverlayButton = createCloseButton(
     CLASSES.OVERLAY_CLOSE,
     'Close info',
