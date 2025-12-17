@@ -238,6 +238,7 @@ const createInfoButton = () => {
     class: CLASSES.INFO_BUTTON,
     'aria-label': 'Show info',
     type: 'button',
+    tabindex: isIOSDevice() ? '-1' : '0',
   });
   button.innerHTML = ICONS.info;
   return button;
@@ -247,7 +248,7 @@ const createInfoButton = () => {
  * Creates the "Edit this template" button.
  */
 const createEditButton = (buttonText) => {
-  const button = createTag('a', { class: CLASSES.BUTTON });
+  const button = createTag('a', { class: CLASSES.BUTTON, tabindex: '0' });
   button.textContent = buttonText;
   return button;
 };
@@ -257,7 +258,7 @@ const createEditButton = (buttonText) => {
  */
 const createInfoOverlay = () => {
   const overlay = createTag('div', { class: CLASSES.INFO_OVERLAY });
-  const overlayText = createTag('p', { class: CLASSES.OVERLAY_TEXT });
+  const overlayText = createTag('p', { class: CLASSES.OVERLAY_TEXT, tabindex: '-1' });
   overlay.append(overlayText);
   return overlay;
 };
