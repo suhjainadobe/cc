@@ -146,7 +146,7 @@
 
 .pre-yt-card-inner .pre-yt-info-button {
   position: absolute;
-  left: 13.9px;
+  inset-inline-start: 13.9px;
   top: 11.227px;
   width: var(--control-width);
   height: var(--control-height);
@@ -166,7 +166,7 @@
 .pre-yt-card-inner .pre-yt-close-card-button {
   position: absolute;
   top: 12px;
-  right: 12px;
+  inset-inline-end: 12px;
   width: var(--control-width);
   height: var(--control-height);
   padding: 0;
@@ -204,7 +204,7 @@
 .pre-yt-card-inner .pre-yt-overlay-close {
   position: absolute;
   top: 12px;
-  right: 12px;
+  inset-inline-end: 12px;
   width: var(--control-width);
   height: var(--control-height);
   padding: 0;
@@ -376,8 +376,8 @@
 
   /* Control button positioning */
   .pre-yt-card-inner .pre-yt-info-button {
-    right: 13.9px;
-    left: unset;
+    inset-inline-end: 13.9px;
+    inset-inline-start: unset;
   }
 
   .pre-yt-card-inner .pre-yt-close-card-button {
