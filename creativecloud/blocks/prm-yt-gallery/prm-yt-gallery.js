@@ -507,8 +507,12 @@ const setupCardInteractions = (card, isMobile) => {
   card.addEventListener('mouseenter', () => expandCard(card, video));
   card.addEventListener('mouseleave', () => collapseCard(card, video));
 
-  // Keyboard navigation: expand on focus
-  card.addEventListener('focusin', () => expandCard(card, video));
+  // Keyboard navigation: expand on focus (only if coming from outside the card)
+  card.addEventListener('focusin', (e) => {
+    if (!card.contains(e.relatedTarget)) {
+      expandCard(card, video);
+    }
+  });
   card.addEventListener('focusout', (e) => {
     if (!card.contains(e.relatedTarget)) {
       collapseCard(card, video);
