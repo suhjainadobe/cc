@@ -18,7 +18,7 @@ const COOKIE_SIGNED_IN = 'acomsis';
 const COOKIE_SIGNED_IN_STAGE = 'acomsis_stage';
 const CHINA_SIGNED_IN_HOME_PATH = '/cn/creativecloud/roc/home';
 
-const locales = {
+export const locales = {
   // Americas
   ar: { ietf: 'es-AR', tk: 'oln4yqj.css' },
   br: { ietf: 'pt-BR', tk: 'inq1xob.css' },
@@ -428,6 +428,7 @@ const CONFIG = {
     /www\.adobe\.com\/(\w\w(_\w\w)?\/)?go(\/.*)?/,
     /www\.adobe\.com\/(\w\w(_\w\w)?\/)?learn(\/.*)?/,
     /www\.adobe\.com\/(\w\w(_\w\w)?\/)?benefits(\/.*)?/,
+    /www\.adobe\.com\/(\w\w(_\w\w)?\/)?download(\/.*)?/,
   ],
   brandConciergeAA: 'cc:app-reco',
 };
