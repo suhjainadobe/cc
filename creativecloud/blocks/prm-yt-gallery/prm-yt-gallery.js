@@ -211,6 +211,7 @@ const createCloseButton = (className, ariaLabel, onClick, tabIndex = 0) => {
     class: className,
     'aria-label': ariaLabel,
     type: 'button',
+    'aria-describedby': 'overlayText',
     tabIndex,
   });
   button.innerHTML = ICONS.close;
@@ -260,6 +261,7 @@ const createInfoOverlay = () => {
   const overlay = createTag('div', { class: CLASSES.INFO_OVERLAY });
   const overlayText = createTag('p', { class: CLASSES.OVERLAY_TEXT, tabindex: '-1' });
   overlay.append(overlayText);
+  overlayText.id = 'overlayText';
   return overlay;
 };
 
@@ -368,6 +370,7 @@ const updateCardWithData = (card, item, eager = false) => {
   // Update overlay text
   if (overlayText) {
     overlayText.textContent = item.altText;
+    overlayText.ariaLive = 'polite';
   }
 
   // Add video if available
@@ -417,16 +420,6 @@ const handleOverlayTabNavigation = (e, card, editButton, closeCardButton) => {
 };
 
 /**
- * Handles tab navigation from edit button to info button.
- */
-const handleEditButtonTabNavigation = (e, infoButton) => {
-  if (e.key === 'Tab' && !e.shiftKey) {
-    e.preventDefault();
-    infoButton.focus();
-  }
-};
-
-/**
  * Handles tab navigation from close card button to next card.
  */
 const handleCloseCardTabNavigation = (e, card) => {
@@ -442,6 +435,20 @@ const handleCloseCardTabNavigation = (e, card) => {
   if (nextCard) {
     e.preventDefault();
     nextCard.focus();
+  }
+};
+
+/**
+ * Handles tab navigation from edit button to info button.
+ */
+const handleEditButtonTabNavigation = (e, infoButton, card) => {
+  if (e.key === 'Tab' && !e.shiftKey) {
+    e.preventDefault();
+    if (card.classList.contains(CLASSES.INFO_VISIBLE)) {
+      handleCloseCardTabNavigation(e, card);
+    } else {
+      infoButton.focus();
+    }
   }
 };
 
@@ -483,7 +490,7 @@ const setupInfoOverlay = (card) => {
 
   if (editButton) {
     editButton.addEventListener('keydown', (e) => {
-      handleEditButtonTabNavigation(e, infoButton);
+      handleEditButtonTabNavigation(e, infoButton, card);
     });
   }
 
