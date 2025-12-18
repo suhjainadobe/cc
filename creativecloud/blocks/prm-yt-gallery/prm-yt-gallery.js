@@ -10,7 +10,6 @@ const CONFIG = {
   },
   VIEWPORT: { mobile: 599, tablet: 1199 },
   EAGER_LOAD_COUNT: 6,
-  MOBILE_BREAKPOINT: '(max-width: 768px)',
 };
 
 // Default block properties
@@ -190,7 +189,9 @@ const playVideo = (video) => {
   video.currentTime = 0;
   video.addEventListener('canplay', () => {
     video.style.opacity = 1;
-    video.play().catch(() => {});
+    video.play().catch((error) => {
+      logError(`Failed to play video: ${error.message}`);
+    });
   }, { once: true });
 };
 
@@ -211,7 +212,11 @@ const expandCard = (card, video) => {
 const collapseCard = (card, video) => {
   card.classList.remove(CLASSES.EXPANDED, CLASSES.INFO_VISIBLE);
   card.querySelector(`.${CLASSES.OVERLAY_TEXT}`).scrollTop = 0;
-  if (video) video.pause();
+  if (video) {
+    video.pause().catch((error) => {
+      logError(`Failed to pause video: ${error.message}`);
+    });
+  }
 };
 
 // ==================== UI Element Creation ====================
@@ -412,7 +417,9 @@ const showInfoOverlay = (card, video, closeOverlayButton) => {
 const hideInfoOverlay = (card, video) => {
   card.classList.remove(CLASSES.INFO_VISIBLE);
   if (video) {
-    video.play().catch(() => {});
+    video.play().catch((error) => {
+      logError(`Failed to resume video after closing info overlay: ${error.message}`);
+    });
   }
   card.querySelector(`.${CLASSES.OVERLAY_TEXT}`).scrollTop = 0;
 };
@@ -518,13 +525,8 @@ const setupInfoOverlay = (card) => {
 /**
  * Sets up card interaction handlers (hover, focus, click).
  */
-const setupCardInteractions = (card, isMobile) => {
+const setupCardInteractions = (card) => {
   const video = card.querySelector(`.${CLASSES.VIDEO_WRAPPER} video`);
-
-  // Mobile: expand on click
-  if (isMobile) {
-    card.addEventListener('click', () => expandCard(card, video));
-  }
 
   // Desktop: expand on hover
   card.addEventListener('mouseenter', () => expandCard(card, video));
@@ -550,10 +552,8 @@ const setupCardInteractions = (card, isMobile) => {
  * Sets up interactions for all cards in the container.
  */
 const setupVideoHoverBehavior = (container) => {
-  const isMobile = window.matchMedia(CONFIG.MOBILE_BREAKPOINT).matches;
   const cards = container.querySelectorAll(`.${CLASSES.CARD}`);
-
-  cards.forEach((card) => setupCardInteractions(card, isMobile));
+  cards.forEach((card) => setupCardInteractions(card));
 };
 
 // ==================== Rendering Functions ====================
