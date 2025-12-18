@@ -227,7 +227,7 @@ const createCloseButton = (className, ariaLabel, onClick, tabIndex = 0) => {
     'aria-describedby': 'overlayText',
     tabIndex,
   });
-  button.innerHTML = ICONS.close;
+  button.insertAdjacentHTML('beforeend', ICONS.close);
   button.addEventListener('click', (e) => {
     e.stopPropagation();
     onClick();
@@ -254,7 +254,7 @@ const createInfoButton = () => {
     type: 'button',
     tabindex: isIOSDevice() ? '-1' : '0',
   });
-  button.innerHTML = ICONS.info;
+  button.insertAdjacentHTML('beforeend', ICONS.info);
   return button;
 };
 
