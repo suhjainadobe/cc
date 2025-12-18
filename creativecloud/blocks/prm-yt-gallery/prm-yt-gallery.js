@@ -307,6 +307,8 @@ const createCloseCardButton = (card) => {
 const createShimmerCard = (buttonText) => {
   const card = createTag('div', {
     class: `${CLASSES.CARD} ${CLASSES.SHIMMER}`,
+    role: 'group',
+    'aria-label': 'Youtube Premiere card',
     tabindex: '0',
   });
   const cardInner = createTag('div', { class: CLASSES.CARD_INNER });
