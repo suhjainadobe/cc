@@ -201,7 +201,6 @@ const collapseCard = (card, video) => {
   if (video) video.pause();
 };
 
-
 // ==================== UI Element Creation ====================
 
 /**
