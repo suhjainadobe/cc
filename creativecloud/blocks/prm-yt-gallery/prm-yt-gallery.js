@@ -128,9 +128,7 @@ const buildApiUrl = (collectionId, offset, limit) => {
 const fetchAdobeStockData = async ({ collectionId, offset = 0, limit }) => {
   try {
     const apiUrl = buildApiUrl(collectionId, offset, limit);
-    const headers = {
-      'x-product': CONFIG.API.PRODUCT,
-    };
+    const headers = { 'x-product': CONFIG.API.PRODUCT };
 
     if (!CONFIG.API.SKIP_API_KEY) {
       headers['x-api-key'] = CONFIG.API.KEY;
