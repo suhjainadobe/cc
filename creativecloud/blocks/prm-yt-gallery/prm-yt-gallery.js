@@ -146,6 +146,7 @@ const PROPERTY_MAP = {
   'free-tag-text': 'freeTagText',
 };
 
+
 /**
  * Parses block properties from the authoring table.
  */
