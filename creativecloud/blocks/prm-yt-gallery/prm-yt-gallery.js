@@ -1,10 +1,10 @@
 import { createTag, getScreenSizeCategory } from '../../scripts/utils.js';
 
-// Configuration Constants
 const CONFIG = {
   CARD_LIMIT: { desktop: 15, tablet: 9, mobile: 10 },
   API: {
     KEY: 'milo-prm-yt-gallery',
+    SKIP_API_KEY: false,
     PRODUCT: 'creativecloud',
     BASE_URL: 'https://stock.adobe.io/Rest/Media/1/Search/Collections',
   },
@@ -85,6 +85,15 @@ const logError = (message) => {
   window.lana?.log(message, { tags: 'prm-yt-gallery' });
 };
 
+// Configures API base URL based on akamai query parameter.
+const configureApiBaseUrl = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('akamai') === 'on') {
+    CONFIG.API.BASE_URL = '/stock-api/Rest/Media/1/Search/Collections';
+    CONFIG.API.SKIP_API_KEY = true;
+  }
+};
+
 // ==================== Data Processing ====================
 
 /**
@@ -107,6 +116,7 @@ const buildApiUrl = (collectionId, offset, limit) => {
     'search_parameters[limit]': limit,
     ff_9909481692: '1',
     'search_parameters[enable_templates]': '1',
+    'search_parameters[order]': 'creation',
     'search_parameters[gallery_id]': collectionId,
   });
   return `${CONFIG.API.BASE_URL}?${params.toString()}`;
@@ -118,12 +128,17 @@ const buildApiUrl = (collectionId, offset, limit) => {
 const fetchAdobeStockData = async ({ collectionId, offset = 0, limit }) => {
   try {
     const apiUrl = buildApiUrl(collectionId, offset, limit);
+    const headers = {
+      'x-product': CONFIG.API.PRODUCT,
+    };
+
+    if (!CONFIG.API.SKIP_API_KEY) {
+      headers['x-api-key'] = CONFIG.API.KEY;
+    }
+
     const response = await fetch(apiUrl, {
       method: 'GET',
-      headers: {
-        'x-product': CONFIG.API.PRODUCT,
-        'x-api-key': CONFIG.API.KEY,
-      },
+      headers,
     });
 
     if (!response.ok) {
@@ -595,6 +610,9 @@ const updateCardsWithData = (container, data, cardLimit, freeTagText) => {
  */
 export default async function init(el) {
   const blockProps = parseBlockProps(el);
+
+  // Configure API base URL based on akamai query parameter
+  configureApiBaseUrl();
 
   if (!blockProps.collectionId) {
     logError('Collection ID is required for prm-yt-gallery');
