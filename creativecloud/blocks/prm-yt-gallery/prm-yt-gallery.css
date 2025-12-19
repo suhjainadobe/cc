@@ -137,6 +137,9 @@
   opacity: 0;
   transition: opacity var(--transition-default);
   z-index: 2;
+  max-width: calc(100% - 50px);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .pre-yt-card.expanded.info-visible .pre-yt-card-inner .pre-yt-button {
@@ -361,6 +364,7 @@
     padding: 6px 21px;
     border-radius: 23px;
     line-height: 22.164px;
+    max-width: calc(100% - 60px);
   }
 
   /* Free tag adjustments */
