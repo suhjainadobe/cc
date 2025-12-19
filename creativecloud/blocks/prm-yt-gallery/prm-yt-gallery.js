@@ -10,6 +10,7 @@ const CONFIG = {
   },
   VIEWPORT: { mobile: 599, tablet: 1199 },
   EAGER_LOAD_COUNT: 6,
+  MOBILE_BREAKPOINT: '(max-width: 768px)',
 };
 
 // Default block properties
@@ -212,11 +213,7 @@ const expandCard = (card, video) => {
 const collapseCard = (card, video) => {
   card.classList.remove(CLASSES.EXPANDED, CLASSES.INFO_VISIBLE);
   card.querySelector(`.${CLASSES.OVERLAY_TEXT}`).scrollTop = 0;
-  if (video) {
-    video.pause().catch((error) => {
-      logError(`Failed to pause video: ${error.message}`);
-    });
-  }
+  if (video) video.pause();
 };
 
 // ==================== UI Element Creation ====================
@@ -525,8 +522,13 @@ const setupInfoOverlay = (card) => {
 /**
  * Sets up card interaction handlers (hover, focus, click).
  */
-const setupCardInteractions = (card) => {
+const setupCardInteractions = (card, isMobile) => {
   const video = card.querySelector(`.${CLASSES.VIDEO_WRAPPER} video`);
+
+  // Mobile: expand on click
+  if (isMobile) {
+    card.addEventListener('click', () => expandCard(card, video));
+  }
 
   // Desktop: expand on hover
   card.addEventListener('mouseenter', () => expandCard(card, video));
@@ -552,8 +554,10 @@ const setupCardInteractions = (card) => {
  * Sets up interactions for all cards in the container.
  */
 const setupVideoHoverBehavior = (container) => {
+  const isMobile = window.matchMedia(CONFIG.MOBILE_BREAKPOINT).matches;
   const cards = container.querySelectorAll(`.${CLASSES.CARD}`);
-  cards.forEach((card) => setupCardInteractions(card));
+
+  cards.forEach((card) => setupCardInteractions(card, isMobile));
 };
 
 // ==================== Rendering Functions ====================
