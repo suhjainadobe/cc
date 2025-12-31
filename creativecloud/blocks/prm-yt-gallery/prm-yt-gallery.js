@@ -187,6 +187,7 @@ const parseBlockProps = (block) => {
  * Plays video with fade-in effect.
  */
 const playVideo = (video) => {
+  if (!video.paused && !video.ended) return;
   video.currentTime = 0;
   video.addEventListener('canplay', () => {
     video.style.opacity = 1;
@@ -221,12 +222,12 @@ const collapseCard = (card, video) => {
 /**
  * Creates a reusable close button.
  */
-const createCloseButton = (className, ariaLabel, onClick, tabIndex = 0) => {
+const createCloseButton = (className, ariaLabel, onClick, tabIndex = 0, ariaDescribedby = '') => {
   const button = createTag('button', {
     class: className,
     'aria-label': ariaLabel,
     type: 'button',
-    'aria-describedby': 'overlayText',
+    'aria-describedby': ariaDescribedby,
     tabIndex,
   });
   button.insertAdjacentHTML('beforeend', ICONS.close);
@@ -276,7 +277,6 @@ const createInfoOverlay = () => {
   const overlay = createTag('div', { class: CLASSES.INFO_OVERLAY });
   const overlayText = createTag('p', { class: CLASSES.OVERLAY_TEXT, tabindex: '-1' });
   overlay.append(overlayText);
-  overlayText.id = 'overlayText';
   return overlay;
 };
 
@@ -475,11 +475,14 @@ const handleEditButtonTabNavigation = (e, infoButton, card) => {
 const setupInfoOverlay = (card) => {
   const infoButton = card.querySelector(`.${CLASSES.INFO_BUTTON}`);
   const overlay = card.querySelector(`.${CLASSES.INFO_OVERLAY}`);
+  const overlayText = overlay.querySelector(`.${CLASSES.OVERLAY_TEXT}`);
   const closeCardButton = card.querySelector(`.${CLASSES.CLOSE_CARD_BUTTON}`);
   const video = card.querySelector(`.${CLASSES.VIDEO_WRAPPER} video`);
   const editButton = card.querySelector(`.${CLASSES.BUTTON}`);
 
   if (!infoButton || !overlay) return;
+  const overlayTextId = `overlayText-${crypto.randomUUID()}`;
+  overlayText.id = overlayTextId;
 
   // Create and append overlay close button
   // chnage here
@@ -488,9 +491,14 @@ const setupInfoOverlay = (card) => {
     'Close info',
     () => {
       hideInfoOverlay(card, video);
-      if (window.screen.width > 500) { card?.querySelector('.pre-yt-info-button')?.focus(); }
+      if (window.screen.width > 500) {
+        card?.querySelector('.pre-yt-info-button')?.focus();
+      } else {
+        card.querySelector(`.${CLASSES.CLOSE_CARD_BUTTON}`).focus();
+      }
     },
     -1,
+    overlayTextId,
   );
   overlay.appendChild(closeOverlayButton);
 
