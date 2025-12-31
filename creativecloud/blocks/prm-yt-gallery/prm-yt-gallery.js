@@ -293,7 +293,7 @@ const createImageElement = (src, alt = '', eager = false) => createTag('img', {
  * Creates a video element with standard settings.
  */
 const createVideoElement = (src, posterUrl) => {
-  const video = createTag('video', { src, poster: posterUrl });
+  const video = createTag('video', { src, poster: posterUrl, tabindex: '-1' });
   video.muted = true;
   video.loop = true;
   video.playsInline = true;
