@@ -246,7 +246,7 @@ const createInfoButton = () => {
     class: CLASSES.INFO_BUTTON,
     'aria-label': 'Show info',
     type: 'button',
-    tabindex: isIOSDevice() ? '-1' : '0',
+    tabindex: '0',
   });
   button.insertAdjacentHTML('beforeend', ICONS.info);
   return button;
