@@ -411,8 +411,9 @@
     transform: scale(1.116);
   }
 
-  /* Hide mobile/tablet buttons */
+  /* Hide mobile/tablet buttons - including expanded state */
   .pre-yt-card-inner .pre-yt-button,
+  .pre-yt-card.expanded .pre-yt-button,
   .pre-yt-card-inner .pre-yt-close-card-button {
     display: none;
   }
