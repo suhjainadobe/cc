@@ -10,7 +10,6 @@ const CONFIG = {
   },
   VIEWPORT: { mobile: 599, tablet: 1199 },
   EAGER_LOAD_COUNT: 6,
-  MOBILE_BREAKPOINT: '(max-width: 768px)',
 };
 
 // Default block properties
@@ -56,8 +55,6 @@ const ICONS = {
   `,
 };
 
-// ==================== Utility Functions ====================
-
 /**
  * Cleans URL by removing escaped forward slashes.
  */
@@ -93,8 +90,6 @@ const configureApiBaseUrl = () => {
     CONFIG.API.SKIP_API_KEY = true;
   }
 };
-
-// ==================== Data Processing ====================
 
 /**
  * Normalizes API item to consistent internal structure.
@@ -181,8 +176,6 @@ const parseBlockProps = (block) => {
   return props;
 };
 
-// ==================== Card State Management ====================
-
 /**
  * Plays video with fade-in effect.
  */
@@ -216,8 +209,6 @@ const collapseCard = (card, video) => {
   card.querySelector(`.${CLASSES.OVERLAY_TEXT}`).scrollTop = 0;
   if (video) video.pause();
 };
-
-// ==================== UI Element Creation ====================
 
 /**
  * Creates a reusable close button.
@@ -300,8 +291,6 @@ const createVideoElement = (src, posterUrl) => {
   video.preload = 'metadata';
   return video;
 };
-
-// ==================== Card Creation and Updates ====================
 
 /**
  * Creates the close button for a specific card.
@@ -393,8 +382,6 @@ const updateCardWithData = (card, item, eager = false) => {
     videoWrapper.append(createVideoElement(item.video, item.image));
   }
 };
-
-// ==================== Event Handlers and Interactions ====================
 
 /**
  * Shows info overlay and pauses video.
@@ -530,11 +517,11 @@ const setupInfoOverlay = (card) => {
 /**
  * Sets up card interaction handlers (hover, focus, click).
  */
-const setupCardInteractions = (card, isMobile) => {
+const setupCardInteractions = (card) => {
   const video = card.querySelector(`.${CLASSES.VIDEO_WRAPPER} video`);
 
   // Mobile: expand on click
-  if (isMobile) {
+  if (getScreenSizeCategory({ mobile: 768 }) === 'mobile') {
     card.addEventListener('click', () => expandCard(card, video));
   }
 
@@ -562,13 +549,9 @@ const setupCardInteractions = (card, isMobile) => {
  * Sets up interactions for all cards in the container.
  */
 const setupVideoHoverBehavior = (container) => {
-  const isMobile = window.matchMedia(CONFIG.MOBILE_BREAKPOINT).matches;
   const cards = container.querySelectorAll(`.${CLASSES.CARD}`);
-
-  cards.forEach((card) => setupCardInteractions(card, isMobile));
+  cards.forEach((card) => setupCardInteractions(card));
 };
-
-// ==================== Rendering Functions ====================
 
 /**
  * Renders shimmer placeholder cards.
@@ -612,8 +595,6 @@ const updateCardsWithData = (container, data, cardLimit, freeTagText) => {
 
   setupVideoHoverBehavior(container);
 };
-
-// ==================== Main Initialization ====================
 
 /**
  * Initializes the gallery block.
