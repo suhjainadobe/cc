@@ -80,7 +80,6 @@ const logError = (message) => {
   window.lana?.log(message, { tags: 'prm-yt-gallery' });
 };
 
-
 /**
  * Normalizes API item to consistent internal structure.
  */
@@ -114,7 +113,6 @@ const fetchAdobeStockData = async ({ collectionId, offset = 0, limit }) => {
   try {
     const apiUrl = buildApiUrl(collectionId, offset, limit);
     const headers = { 'x-product': CONFIG.API.PRODUCT };
-
 
     const response = await fetch(apiUrl, {
       method: 'GET',
