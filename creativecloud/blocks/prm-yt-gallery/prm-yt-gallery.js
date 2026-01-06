@@ -3,8 +3,10 @@ import { createTag, getScreenSizeCategory } from '../../scripts/utils.js';
 const CONFIG = {
   CARD_LIMIT: { desktop: 15, tablet: 9, mobile: 10 },
   API: {
+    KEY: 'milo-prm-yt-gallery',
+    SKIP_API_KEY: false,
     PRODUCT: 'creativecloud',
-    BASE_URL: '/stock-api/Rest/Media/1/Search/Collections',
+    BASE_URL: 'https://stock.adobe.io/Rest/Media/1/Search/Collections',
   },
   VIEWPORT: { mobile: 599, tablet: 1199 },
   EAGER_LOAD_COUNT: 6,
@@ -80,6 +82,15 @@ const logError = (message) => {
   window.lana?.log(message, { tags: 'prm-yt-gallery' });
 };
 
+// Configures API base URL based on akamai query parameter.
+const configureApiBaseUrl = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('akamai') === 'on') {
+    CONFIG.API.BASE_URL = '/stock-api/Rest/Media/1/Search/Collections';
+    CONFIG.API.SKIP_API_KEY = true;
+  }
+};
+
 /**
  * Normalizes API item to consistent internal structure.
  */
@@ -113,6 +124,10 @@ const fetchAdobeStockData = async ({ collectionId, offset = 0, limit }) => {
   try {
     const apiUrl = buildApiUrl(collectionId, offset, limit);
     const headers = { 'x-product': CONFIG.API.PRODUCT };
+
+    if (!CONFIG.API.SKIP_API_KEY) {
+      headers['x-api-key'] = CONFIG.API.KEY;
+    }
 
     const response = await fetch(apiUrl, {
       method: 'GET',
@@ -505,14 +520,14 @@ const setupInfoOverlay = (card) => {
 const setupCardInteractions = (card) => {
   const video = card.querySelector(`.${CLASSES.VIDEO_WRAPPER} video`);
 
-  // Mobile: expand on click
-  if (getScreenSizeCategory({ mobile: 768 }) === 'mobile') {
+  // Mobile/Tablet: expand on click, Desktop: expand on hover
+  if (getScreenSizeCategory(CONFIG.VIEWPORT) === 'mobile' || getScreenSizeCategory(CONFIG.VIEWPORT) === 'tablet') {
     card.addEventListener('click', () => expandCard(card, video));
+  } else {
+    // Desktop: expand on hover
+    card.addEventListener('mouseenter', () => expandCard(card, video));
+    card.addEventListener('mouseleave', () => collapseCard(card, video));
   }
-
-  // Desktop: expand on hover
-  card.addEventListener('mouseenter', () => expandCard(card, video));
-  card.addEventListener('mouseleave', () => collapseCard(card, video));
 
   // Keyboard navigation: expand on focus (only if coming from outside the card)
   card.addEventListener('focusin', (e) => {
@@ -586,6 +601,9 @@ const updateCardsWithData = (container, data, cardLimit, freeTagText) => {
  */
 export default async function init(el) {
   const blockProps = parseBlockProps(el);
+
+  // Configure API base URL based on akamai query parameter
+  configureApiBaseUrl();
 
   if (!blockProps.collectionId) {
     logError('Collection ID is required for prm-yt-gallery');
