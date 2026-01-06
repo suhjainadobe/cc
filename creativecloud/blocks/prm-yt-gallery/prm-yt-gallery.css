@@ -137,7 +137,8 @@
   max-width: calc(100% - 50px);
   overflow: hidden;
   text-overflow: ellipsis;
-  display: none;
+  opacity: 0;
+  transition: opacity var(--transition-default);
 }
 
 .pre-yt-card.expanded.info-visible .pre-yt-card-inner .pre-yt-button {
@@ -159,7 +160,8 @@
   align-items: center;
   justify-content: center;
   z-index: 2;
-  display: none;
+  opacity: 0;
+  transition: opacity var(--transition-default);
 }
 
 .pre-yt-card-inner .pre-yt-close-card-button {
@@ -271,7 +273,7 @@
 
 .pre-yt-card.expanded .pre-yt-button,
 .pre-yt-card.expanded .pre-yt-info-button {
-  display: block;
+  opacity: 1;
 }
 
 .pre-yt-card.expanded .pre-yt-free-tag {
