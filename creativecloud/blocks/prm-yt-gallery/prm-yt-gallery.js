@@ -85,7 +85,7 @@ const logError = (message) => {
  */
 const normalizeItem = (apiItem) => ({
   image: cleanUrl(apiItem.thumbnail_url),
-  altText: apiItem.title || 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries',
+  altText: apiItem.title || 'premiere youtube card',
   deepLinkUrl: createTemplateDeepLink(apiItem.id),
   video: cleanUrl(apiItem.video_preview_url),
   isFree: apiItem.is_free || false,
@@ -181,6 +181,11 @@ const playVideo = (video) => {
 const expandCard = (card, video) => {
   card.classList.add(CLASSES.EXPANDED);
 
+  const closeCardButton = card.querySelector(`.${CLASSES.CLOSE_CARD_BUTTON}`);
+  if (closeCardButton) {
+    closeCardButton.setAttribute('aria-hidden', 'false');
+  }
+
   if (video && !card.classList.contains(CLASSES.INFO_VISIBLE)) {
     playVideo(video);
   }
@@ -192,26 +197,32 @@ const expandCard = (card, video) => {
 const collapseCard = (card, video) => {
   card.classList.remove(CLASSES.EXPANDED, CLASSES.INFO_VISIBLE);
   card.querySelector(`.${CLASSES.OVERLAY_TEXT}`).scrollTop = 0;
+
+  const closeCardButton = card.querySelector(`.${CLASSES.CLOSE_CARD_BUTTON}`);
+  if (closeCardButton) {
+    closeCardButton.setAttribute('aria-hidden', 'true');
+  }
+
   if (video) video.pause();
 };
 
 /**
  * Creates a reusable close button.
  */
-const createCloseButton = (className, ariaLabel, onClick, tabIndex = 0, ariaDescribedby = '') => {
+const createCloseButton = (className, ariaLabel, onClick, tabIndex = 0, ariaHidden = true) => {
   const button = createTag('button', {
     class: className,
     'aria-label': ariaLabel,
     type: 'button',
-    'aria-describedby': ariaDescribedby,
     tabIndex,
+    'aria-hidden': ariaHidden ? 'true' : 'false',
   });
   button.insertAdjacentHTML('beforeend', ICONS.close);
   button.addEventListener('click', (e) => {
     e.stopPropagation();
     onClick();
   });
-  if (window.screen.width > 500) {
+  if (window.screen.width > CONFIG.VIEWPORT.mobile) {
     button.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e?.preventDefault();
@@ -259,9 +270,8 @@ const createInfoOverlay = () => {
 /**
  * Creates an image element with lazy/eager loading.
  */
-const createImageElement = (src, alt = '', eager = false) => createTag('img', {
+const createImageElement = (src, eager = false) => createTag('img', {
   src,
-  alt,
   loading: eager ? 'eager' : 'lazy',
 });
 
@@ -287,7 +297,7 @@ const createCloseCardButton = (card) => {
     'Close card',
     () => {
       collapseCard(card, video);
-      if (window.screen.width > 500) { card?.querySelector('.pre-yt-info-button')?.focus(); }
+      if (window.screen.width > CONFIG.VIEWPORT.mobile) { card?.querySelector('.pre-yt-info-button')?.focus(); }
     },
   );
 };
@@ -298,7 +308,6 @@ const createCloseCardButton = (card) => {
 const createShimmerCard = (buttonText) => {
   const card = createTag('div', {
     class: `${CLASSES.CARD} ${CLASSES.SHIMMER}`,
-    role: 'group',
     'aria-label': 'Youtube Premiere card',
     tabindex: '0',
   });
@@ -347,7 +356,7 @@ const updateCardWithData = (card, item, eager = false) => {
   const overlayText = card.querySelector(`.${CLASSES.OVERLAY_TEXT}`);
 
   // Add and handle image loading
-  const img = createImageElement(item.image, item.altText, eager);
+  const img = createImageElement(item.image, eager);
   handleImageLoad(card, img);
   imageWrapper.append(img);
 
@@ -447,15 +456,11 @@ const handleEditButtonTabNavigation = (e, infoButton, card) => {
 const setupInfoOverlay = (card) => {
   const infoButton = card.querySelector(`.${CLASSES.INFO_BUTTON}`);
   const overlay = card.querySelector(`.${CLASSES.INFO_OVERLAY}`);
-  const overlayText = overlay.querySelector(`.${CLASSES.OVERLAY_TEXT}`);
   const closeCardButton = card.querySelector(`.${CLASSES.CLOSE_CARD_BUTTON}`);
   const video = card.querySelector(`.${CLASSES.VIDEO_WRAPPER} video`);
   const editButton = card.querySelector(`.${CLASSES.BUTTON}`);
 
   if (!infoButton || !overlay) return;
-  const overlayTextId = `overlayText-${crypto.randomUUID()}`;
-  overlayText.id = overlayTextId;
-
   // Create and append overlay close button
   // chnage here
   const closeOverlayButton = createCloseButton(
@@ -463,14 +468,13 @@ const setupInfoOverlay = (card) => {
     'Close info',
     () => {
       hideInfoOverlay(card, video);
-      if (window.screen.width > 500) {
+      if (window.screen.width > CONFIG.VIEWPORT.mobile) {
         card?.querySelector('.pre-yt-info-button')?.focus();
       } else {
         card.querySelector(`.${CLASSES.CLOSE_CARD_BUTTON}`).focus();
       }
     },
     -1,
-    overlayTextId,
   );
   overlay.appendChild(closeOverlayButton);
 

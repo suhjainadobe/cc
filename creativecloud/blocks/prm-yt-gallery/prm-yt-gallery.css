@@ -7,10 +7,6 @@
   --card-offset: -55px;
 }
 
-/* ====================
-   Base Layout
-   ==================== */
-
 .prm-yt-gallery {
   display: flex;
   justify-content: center;
@@ -26,10 +22,6 @@
   max-width: calc((143px * 2) + 16px + 40px);
   margin: 0 auto;
 }
-
-/* ====================
-   Card Structure
-   ==================== */
 
 .pre-yt-card {
   width: 100%;
@@ -55,10 +47,6 @@
 .pre-yt-card:nth-child(2n) {
   transform: translateY(var(--card-offset));
 }
-
-/* ====================
-   Card Content Wrappers
-   ==================== */
 
 .pre-yt-card-inner .image-wrapper {
   width: 100%;
@@ -92,10 +80,6 @@
   display: block;
 }
 
-/* ====================
-   Free Tag Badge
-   ==================== */
-
 .pre-yt-card .pre-yt-free-tag {
   display: flex;
   position: absolute;
@@ -113,10 +97,6 @@
   border-end-start-radius: 2.07px;
   z-index: 4;
 }
-
-/* ====================
-   Interactive Elements - Buttons
-   ==================== */
 
 .pre-yt-card-inner .pre-yt-button {
   position: absolute;
@@ -180,10 +160,6 @@
   justify-content: center;
   z-index: 4;
 }
-
-/* ====================
-   Info Overlay
-   ==================== */
 
 .pre-yt-card-inner .pre-yt-info-overlay {
   position: absolute;
@@ -250,10 +226,6 @@
   background-color: rgba(0, 0, 0, 0.7);
 }
 
-/* ====================
-   Card States - Expanded
-   ==================== */
-
 .pre-yt-card.expanded {
   z-index: 1;
 }
@@ -280,10 +252,6 @@
   display: none;
 }
 
-/* ====================
-   Card States - Info Visible
-   ==================== */
-
 .pre-yt-card.info-visible .pre-yt-info-overlay {
   opacity: 1;
   pointer-events: auto;
@@ -298,10 +266,6 @@
 .pre-yt-card.info-visible .pre-yt-button {
   z-index: 4;
 }
-
-/* ====================
-   Loading State - Shimmer Effect
-   ==================== */
 
 .pre-yt-card.shimmer .pre-yt-card-inner .image-wrapper {
   background-color: #e0e0e0;
@@ -331,10 +295,6 @@
   }
 }
 
-/* ====================
-   Responsive - Tablet (600px - 1199px)
-   ==================== */
-
 @media (min-width: 600px) {
   .pre-yt-grid {
     grid-template-columns: repeat(3, minmax(min-content, 203px));
@@ -352,12 +312,10 @@
     transform: translateY(var(--card-offset));
   }
 
-  /* Card state adjustments */
   .pre-yt-card.expanded .pre-yt-card-inner {
     transform: scale(1.158);
   }
 
-  /* Button adjustments */
   .pre-yt-card-inner .pre-yt-button {
     font-size: 17px;
     padding: 6px 21px;
@@ -366,7 +324,6 @@
     max-width: calc(100% - 60px);
   }
 
-  /* Free tag adjustments */
   .pre-yt-card .pre-yt-free-tag {
     height: 19.69px;
     font-size: 10.34px;
@@ -375,7 +332,6 @@
     border-end-start-radius: 2.95px;
   }
 
-  /* Control button positioning */
   .pre-yt-card-inner .pre-yt-info-button {
     inset-inline-end: 13.9px;
     inset-inline-start: unset;
@@ -385,10 +341,6 @@
     display: none;
   }
 }
-
-/* ====================
-   Responsive - Desktop (1200px and above)
-   ==================== */
 
 @media (min-width: 1200px) {
   .pre-yt-grid {
@@ -413,14 +365,12 @@
     transform: scale(1.116);
   }
 
-  /* Hide mobile/tablet buttons - including expanded state */
   .pre-yt-card-inner .pre-yt-button,
   .pre-yt-card.expanded .pre-yt-button,
   .pre-yt-card-inner .pre-yt-close-card-button {
     display: none;
   }
 
-  /* Free tag adjustments */
   .pre-yt-card .pre-yt-free-tag {
     height: 26px;
     font-size: 14px;
