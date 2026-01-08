@@ -148,6 +148,10 @@
   display: var(--button-display);
 }
 
+.pre-yt-card-inner .pre-yt-button wbr {
+  display: none;
+}
+
 .pre-yt-card.expanded.info-visible .pre-yt-card-inner .pre-yt-button {
   bottom: var(--button-bottom-info-visible);
 }
