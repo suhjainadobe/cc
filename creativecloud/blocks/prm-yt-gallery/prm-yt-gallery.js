@@ -280,6 +280,7 @@ const createImageElement = (src, eager = false) => createTag('img', {
  */
 const createVideoElement = (src, posterUrl) => {
   const video = createTag('video', { src, poster: posterUrl, tabindex: '-1' });
+  video.controls = false;
   video.muted = true;
   video.loop = true;
   video.playsInline = true;
@@ -308,7 +309,6 @@ const createCloseCardButton = (card) => {
 const createShimmerCard = (buttonText) => {
   const card = createTag('div', {
     class: `${CLASSES.CARD} ${CLASSES.SHIMMER}`,
-    'aria-label': 'Youtube Premiere card',
     tabindex: '0',
   });
   const cardInner = createTag('div', { class: CLASSES.CARD_INNER });
@@ -359,16 +359,19 @@ const updateCardWithData = (card, item, eager = false) => {
   const img = createImageElement(item.image, eager);
   handleImageLoad(card, img);
   imageWrapper.append(img);
-
-  // Update button deep link
-  if (button && item.deepLinkUrl) {
-    button.href = item.deepLinkUrl;
-  }
+  const overlayTextId = `overlay-text-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
   // Update overlay text
   if (overlayText) {
     overlayText.textContent = item.altText;
     overlayText.ariaLive = 'polite';
+    overlayText.id = overlayTextId;
+  }
+
+  // Update button deep link and aria-describedby
+  if (button && item.deepLinkUrl) {
+    button.href = item.deepLinkUrl;
+    button.setAttribute('aria-describedby', overlayTextId);
   }
 
   // Add video if available
@@ -385,6 +388,7 @@ const showInfoOverlay = (card, video, closeOverlayButton) => {
   if (video) video.pause();
   if (closeOverlayButton) {
     closeOverlayButton.tabindex = 0;
+    closeOverlayButton.setAttribute('aria-hidden', 'false');
     closeOverlayButton.focus();
   }
 };
@@ -394,6 +398,12 @@ const showInfoOverlay = (card, video, closeOverlayButton) => {
  */
 const hideInfoOverlay = (card, video) => {
   card.classList.remove(CLASSES.INFO_VISIBLE);
+
+  const closeOverlayButton = card.querySelector(`.${CLASSES.OVERLAY_CLOSE}`);
+  if (closeOverlayButton) {
+    closeOverlayButton.setAttribute('aria-hidden', 'true');
+  }
+
   if (video) {
     video.play().catch((error) => {
       logError(`Failed to resume video after closing info overlay: ${error.message}`);
@@ -465,7 +475,7 @@ const setupInfoOverlay = (card) => {
   // chnage here
   const closeOverlayButton = createCloseButton(
     CLASSES.OVERLAY_CLOSE,
-    'Close info',
+    'Close text description',
     () => {
       hideInfoOverlay(card, video);
       if (window.screen.width > CONFIG.VIEWPORT.mobile) {

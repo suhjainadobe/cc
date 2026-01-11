@@ -144,7 +144,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   opacity: 0;
-  transition: opacity var(--transition-default);
   display: var(--button-display);
 }
 
@@ -173,7 +172,6 @@
   justify-content: center;
   z-index: 2;
   opacity: 0;
-  transition: opacity var(--transition-default);
 }
 
 .pre-yt-card-inner .pre-yt-close-card-button {
@@ -202,7 +200,6 @@
   background: rgba(0, 0, 0, 0.85);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--transition-default);
   display: flex;
   flex-direction: column;
   padding: var(--info-overlay-padding);
@@ -355,6 +352,10 @@
   /* Tablet: Column 2 cards (2, 5, 8) offset */
   .pre-yt-card:nth-child(3n+2) {
     transform: translateY(var(--card-offset));
+  }
+
+  .pre-yt-card-inner .pre-yt-close-card-button {
+    display: none;
   }
 
 }
