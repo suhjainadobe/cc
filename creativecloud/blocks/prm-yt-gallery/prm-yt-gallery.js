@@ -80,6 +80,18 @@ const logError = (message) => {
   window.lana?.log(message, { tags: 'prm-yt-gallery' });
 };
 
+const setAriaHidden = (elementOrSelector, hidden, parent = document) => {
+  let element = elementOrSelector;
+
+  if (typeof elementOrSelector === 'string') {
+    element = parent.querySelector(elementOrSelector);
+  }
+
+  if (element) {
+    element.setAttribute('aria-hidden', hidden ? 'true' : 'false');
+  }
+};
+
 /**
  * Normalizes API item to consistent internal structure.
  */
@@ -181,10 +193,8 @@ const playVideo = (video) => {
 const expandCard = (card, video) => {
   card.classList.add(CLASSES.EXPANDED);
 
-  const closeCardButton = card.querySelector(`.${CLASSES.CLOSE_CARD_BUTTON}`);
-  if (closeCardButton) {
-    closeCardButton.setAttribute('aria-hidden', 'false');
-  }
+  setAriaHidden(`.${CLASSES.CLOSE_CARD_BUTTON}`, false, card);
+  setAriaHidden(`.${CLASSES.INFO_BUTTON}`, false, card);
 
   if (video && !card.classList.contains(CLASSES.INFO_VISIBLE)) {
     playVideo(video);
@@ -198,10 +208,8 @@ const collapseCard = (card, video) => {
   card.classList.remove(CLASSES.EXPANDED, CLASSES.INFO_VISIBLE);
   card.querySelector(`.${CLASSES.OVERLAY_TEXT}`).scrollTop = 0;
 
-  const closeCardButton = card.querySelector(`.${CLASSES.CLOSE_CARD_BUTTON}`);
-  if (closeCardButton) {
-    closeCardButton.setAttribute('aria-hidden', 'true');
-  }
+  setAriaHidden(`.${CLASSES.CLOSE_CARD_BUTTON}`, true, card);
+  setAriaHidden(`.${CLASSES.INFO_BUTTON}`, true, card);
 
   if (video) video.pause();
 };
@@ -243,6 +251,7 @@ const createInfoButton = () => {
     'aria-label': 'Show info',
     type: 'button',
     tabindex: '0',
+    'aria-hidden': 'true',
   });
   button.insertAdjacentHTML('beforeend', ICONS.info);
   return button;
@@ -386,9 +395,12 @@ const updateCardWithData = (card, item, eager = false) => {
 const showInfoOverlay = (card, video, closeOverlayButton) => {
   card.classList.add(CLASSES.INFO_VISIBLE);
   if (video) video.pause();
+
+  setAriaHidden(`.${CLASSES.INFO_BUTTON}`, true, card);
+
   if (closeOverlayButton) {
     closeOverlayButton.tabindex = 0;
-    closeOverlayButton.setAttribute('aria-hidden', 'false');
+    setAriaHidden(closeOverlayButton, false);
     closeOverlayButton.focus();
   }
 };
@@ -399,10 +411,8 @@ const showInfoOverlay = (card, video, closeOverlayButton) => {
 const hideInfoOverlay = (card, video) => {
   card.classList.remove(CLASSES.INFO_VISIBLE);
 
-  const closeOverlayButton = card.querySelector(`.${CLASSES.OVERLAY_CLOSE}`);
-  if (closeOverlayButton) {
-    closeOverlayButton.setAttribute('aria-hidden', 'true');
-  }
+  setAriaHidden(`.${CLASSES.OVERLAY_CLOSE}`, true, card);
+  setAriaHidden(`.${CLASSES.INFO_BUTTON}`, false, card);
 
   if (video) {
     video.play().catch((error) => {
