@@ -159,7 +159,7 @@
   position: absolute;
   inset-inline-start: var(--info-button-left);
   inset-inline-end: var(--info-button-right);
-  top: 11.227px;
+  top: 11px;
   width: var(--control-width);
   height: var(--control-height);
   padding: 0;
