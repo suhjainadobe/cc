@@ -250,7 +250,7 @@ const createInfoOverlay = () => {
 const createImageElement = (src, eager = false) => createTag('img', {
   src,
   loading: eager ? 'eager' : 'lazy',
-  altText: '',
+  alt: '',
 });
 
 //  Creates a video element with standard settings.
