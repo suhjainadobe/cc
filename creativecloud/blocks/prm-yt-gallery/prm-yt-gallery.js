@@ -1,4 +1,4 @@
-import { createTag, getScreenSizeCategory } from '../../scripts/utils.js';
+import { createTag, getScreenSizeCategory, getConfig } from '../../scripts/utils.js';
 
 const CONFIG = {
   CARD_LIMIT: { desktop: 15, tablet: 9, mobile: 10 },
@@ -39,13 +39,13 @@ const CLASSES = {
 // SVG Icons
 const ICONS = {
   close: `
-    <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
       <rect width="31" height="22" rx="11" fill="white"/>
       <path d="M16.2883 10.7253L19.2951 7.71885C19.4643 7.54966 19.4643 7.27557 19.2951 7.10638C19.1259 6.93719 18.8518 6.93719 18.6826 7.10638L15.6758 10.1129L12.669 7.10638C12.4999 6.93719 12.2258 6.93719 12.0566 7.10638C11.8874 7.27557 11.8874 7.54966 12.0566 7.71885L15.0633 10.7253L12.0566 13.7318C11.8874 13.901 11.8874 14.1751 12.0566 14.3443C12.1412 14.4289 12.252 14.4712 12.3628 14.4712C12.4736 14.4712 12.5844 14.4289 12.669 14.3443L15.6758 11.3378L18.6826 14.3443C18.7672 14.4289 18.878 14.4712 18.9888 14.4712C19.0996 14.4712 19.2105 14.4289 19.2951 14.3443C19.4642 14.1751 19.4642 13.901 19.2951 13.7318L16.2883 10.7253Z" fill="#292929"/>
     </svg>
   `,
   info: `
-    <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
     <path d="M15.6752 15.7781C12.8886 15.7781 10.6221 13.5116 10.6221 10.725C10.6221 7.93845 12.8886 5.67188 15.6752 5.67188C18.4617 5.67188 20.7283 7.93845 20.7283 10.725C20.7283 13.5116 18.4617 15.7781 15.6752 15.7781ZM15.6752 6.53812C13.3663 6.53812 11.4883 8.41613 11.4883 10.725C11.4883 13.0339 13.3663 14.9119 15.6752 14.9119C17.9841 14.9119 19.8621 13.0339 19.8621 10.725C19.8621 8.41613 17.9841 6.53812 15.6752 6.53812Z" fill="#292929"/>
     <path d="M15.6756 7.98826C15.8088 7.98357 15.9386 8.03092 16.0375 8.12029C16.2282 8.33111 16.2282 8.65218 16.0375 8.863C15.9397 8.95454 15.8095 9.00338 15.6756 8.99873C15.5391 9.00421 15.4065 8.95233 15.31 8.85566C15.2164 8.7587 15.1661 8.62794 15.1706 8.49325C15.1635 8.35755 15.2108 8.22462 15.3021 8.12399C15.4024 8.02886 15.5377 7.97969 15.6756 7.98826Z" fill="#292929"/>
     <path d="M15.6753 13.6487C15.4362 13.6487 15.2422 13.4547 15.2422 13.2155V10.4234C15.2422 10.1842 15.4362 9.99023 15.6753 9.99023C15.9144 9.99023 16.1084 10.1842 16.1084 10.4234V13.2155C16.1084 13.4547 15.9144 13.6487 15.6753 13.6487Z" fill="#292929"/>
@@ -53,19 +53,13 @@ const ICONS = {
   `,
 };
 
-/**
- * Cleans URL by removing escaped forward slashes.
- */
+// Cleans URL by removing escaped forward slashes.
 const cleanUrl = (url) => (url ? url.replace(/\\\//g, '/') : '');
 
-/**
- * Generates template deep link URL.
- */
+// Generates template deep link URL.
 const createTemplateDeepLink = (templateId) => `https://premierepro.app.link/gRUEA7oVAYb?template_id=${templateId}`;
 
-/**
- * Detects if the user is on an iOS device.
- */
+// Detects if the user is on an iOS device.
 const isIOSDevice = () => {
   const ua = navigator.userAgent;
   const isiPhone = /iPhone/i.test(ua);
@@ -73,9 +67,7 @@ const isIOSDevice = () => {
   return isiPhone || isiPad;
 };
 
-/**
- * Logs errors to analytics.
- */
+// Logs errors to analytics.
 const logError = (message) => {
   window.lana?.log(message, { tags: 'prm-yt-gallery' });
 };
@@ -92,9 +84,7 @@ const setAriaHidden = (elementOrSelector, hidden, parent = document) => {
   }
 };
 
-/**
- * Normalizes API item to consistent internal structure.
- */
+// Normalizes API item to consistent internal structure.
 const normalizeItem = (apiItem) => ({
   image: cleanUrl(apiItem.thumbnail_url),
   altText: apiItem.title || 'premiere youtube card',
@@ -103,9 +93,7 @@ const normalizeItem = (apiItem) => ({
   isFree: apiItem.is_free || false,
 });
 
-/**
- * Builds Adobe Stock API URL with query parameters.
- */
+// Builds Adobe Stock API URL with query parameters.
 const buildApiUrl = (collectionId, offset, limit) => {
   const params = new URLSearchParams({
     'search_parameters[offset]': offset,
@@ -115,12 +103,12 @@ const buildApiUrl = (collectionId, offset, limit) => {
     'search_parameters[order]': 'creation',
     'search_parameters[gallery_id]': collectionId,
   });
-  return `${CONFIG.API.BASE_URL}?${params.toString()}`;
+  const { env } = getConfig();
+  const apiUrl = env.name === 'stage' || env.name === 'local' ? `https://www.stage.adobe.com${CONFIG.API.BASE_URL}?${params.toString()}` : `${CONFIG.API.BASE_URL}?${params.toString()}`;
+  return apiUrl;
 };
 
-/**
- * Fetches data from Adobe Stock API.
- */
+// Fetches data from Adobe Stock API.
 const fetchAdobeStockData = async ({ collectionId, offset = 0, limit }) => {
   try {
     const apiUrl = buildApiUrl(collectionId, offset, limit);
@@ -142,18 +130,14 @@ const fetchAdobeStockData = async ({ collectionId, offset = 0, limit }) => {
   }
 };
 
-/**
- * Maps property labels to their corresponding keys.
- */
+// Maps property labels to their corresponding keys.
 const PROPERTY_MAP = {
   'collection-id': 'collectionId',
   button: 'buttonText',
   'free-tag-text': 'freeTagText',
 };
 
-/**
- * Parses block properties from the authoring table.
- */
+// Parses block properties from the authoring table.
 const parseBlockProps = (block) => {
   const props = { ...DEFAULT_PROPS };
   const rows = Array.from(block.children);
@@ -173,9 +157,7 @@ const parseBlockProps = (block) => {
   return props;
 };
 
-/**
- * Plays video with fade-in effect.
- */
+// Plays video with fade-in effect.
 const playVideo = (video) => {
   if (!video.paused && !video.ended) return;
   video.currentTime = 0;
@@ -187,23 +169,19 @@ const playVideo = (video) => {
   }, { once: true });
 };
 
-/**
- * Expands a card and starts video playback.
- */
+// Expands a card and starts video playback.
 const expandCard = (card, video) => {
   card.classList.add(CLASSES.EXPANDED);
 
   setAriaHidden(`.${CLASSES.CLOSE_CARD_BUTTON}`, false, card);
-  setAriaHidden(`.${CLASSES.INFO_BUTTON}`, false, card);
+  setAriaHidden(`.${CLASSES.INFO_BUTTON}`, true, card);
 
   if (video && !card.classList.contains(CLASSES.INFO_VISIBLE)) {
     playVideo(video);
   }
 };
 
-/**
- * Collapses a card and stops video playback.
- */
+// Collapses a card and stops video playback.
 const collapseCard = (card, video) => {
   card.classList.remove(CLASSES.EXPANDED, CLASSES.INFO_VISIBLE);
   card.querySelector(`.${CLASSES.OVERLAY_TEXT}`).scrollTop = 0;
@@ -214,9 +192,7 @@ const collapseCard = (card, video) => {
   if (video) video.pause();
 };
 
-/**
- * Creates a reusable close button.
- */
+// Creates a reusable close button.
 const createCloseButton = (className, ariaLabel, onClick, tabIndex = 0, ariaHidden = true) => {
   const button = createTag('button', {
     class: className,
@@ -242,9 +218,7 @@ const createCloseButton = (className, ariaLabel, onClick, tabIndex = 0, ariaHidd
   return button;
 };
 
-/**
- * Creates the info button for showing template details.
- */
+// Creates the info button for showing template details.
 const createInfoButton = () => {
   const button = createTag('button', {
     class: CLASSES.INFO_BUTTON,
@@ -257,18 +231,14 @@ const createInfoButton = () => {
   return button;
 };
 
-/**
- * Creates the "Edit this template" button.
- */
+// Creates the "Edit this template" button.
 const createEditButton = (buttonText) => {
   const button = createTag('a', { class: CLASSES.BUTTON, tabindex: '0' });
   button.textContent = buttonText;
   return button;
 };
 
-/**
- * Creates the info overlay with text container.
- */
+// Creates the info overlay with text container.
 const createInfoOverlay = () => {
   const overlay = createTag('div', { class: CLASSES.INFO_OVERLAY });
   const overlayText = createTag('p', { class: CLASSES.OVERLAY_TEXT, tabindex: '-1' });
@@ -276,17 +246,14 @@ const createInfoOverlay = () => {
   return overlay;
 };
 
-/**
- * Creates an image element with lazy/eager loading.
- */
+// Creates an image element with lazy/eager loading.
 const createImageElement = (src, eager = false) => createTag('img', {
   src,
   loading: eager ? 'eager' : 'lazy',
+  altText: '',
 });
 
-/**
- * Creates a video element with standard settings.
- */
+//  Creates a video element with standard settings.
 const createVideoElement = (src, posterUrl) => {
   const video = createTag('video', { src, poster: posterUrl, tabindex: '-1' });
   video.controls = false;
@@ -297,9 +264,7 @@ const createVideoElement = (src, posterUrl) => {
   return video;
 };
 
-/**
- * Creates the close button for a specific card.
- */
+// Creates the close button for a specific card.
 const createCloseCardButton = (card) => {
   const video = card.querySelector(`.${CLASSES.VIDEO_WRAPPER} video`);
   return createCloseButton(
@@ -312,9 +277,7 @@ const createCloseCardButton = (card) => {
   );
 };
 
-/**
- * Creates a shimmer card placeholder with all UI elements.
- */
+// Creates a shimmer card placeholder with all UI elements.
 const createShimmerCard = (buttonText) => {
   const card = createTag('div', {
     class: `${CLASSES.CARD} ${CLASSES.SHIMMER}`,
@@ -341,9 +304,7 @@ const createShimmerCard = (buttonText) => {
   return card;
 };
 
-/**
- * Removes shimmer effect once image loads.
- */
+// Removes shimmer effect once image loads.
 const handleImageLoad = (card, img) => {
   const removeShimmer = () => card.classList.remove(CLASSES.SHIMMER);
 
@@ -355,9 +316,7 @@ const handleImageLoad = (card, img) => {
   }
 };
 
-/**
- * Updates card with actual content from API data.
- */
+// Updates card with actual content from API data.
 const updateCardWithData = (card, item, eager = false) => {
   const imageWrapper = card.querySelector(`.${CLASSES.IMAGE_WRAPPER}`);
   const videoWrapper = card.querySelector(`.${CLASSES.VIDEO_WRAPPER}`);
@@ -389,9 +348,7 @@ const updateCardWithData = (card, item, eager = false) => {
   }
 };
 
-/**
- * Shows info overlay and pauses video.
- */
+// Shows info overlay and pauses video.
 const showInfoOverlay = (card, video, closeOverlayButton) => {
   card.classList.add(CLASSES.INFO_VISIBLE);
   if (video) video.pause();
@@ -405,14 +362,12 @@ const showInfoOverlay = (card, video, closeOverlayButton) => {
   }
 };
 
-/**
- * Hides info overlay and resumes video.
- */
+// Hides info overlay and resumes video.
 const hideInfoOverlay = (card, video) => {
   card.classList.remove(CLASSES.INFO_VISIBLE);
 
   setAriaHidden(`.${CLASSES.OVERLAY_CLOSE}`, true, card);
-  setAriaHidden(`.${CLASSES.INFO_BUTTON}`, false, card);
+  setAriaHidden(`.${CLASSES.INFO_BUTTON}`, true, card);
 
   if (video) {
     video.play().catch((error) => {
@@ -422,9 +377,7 @@ const hideInfoOverlay = (card, video) => {
   card.querySelector(`.${CLASSES.OVERLAY_TEXT}`).scrollTop = 0;
 };
 
-/**
- * Handles tab navigation within the overlay.
- */
+// Handles tab navigation within the overlay.
 const handleOverlayTabNavigation = (e, card, editButton, closeCardButton) => {
   if (e.key !== 'Tab' || e.shiftKey) return;
 
@@ -437,9 +390,7 @@ const handleOverlayTabNavigation = (e, card, editButton, closeCardButton) => {
   }
 };
 
-/**
- * Handles tab navigation from close card button to next card.
- */
+// Handles tab navigation from close card button to next card.
 const handleCloseCardTabNavigation = (e, card) => {
   if (e.key !== 'Tab' || e.shiftKey) return;
 
@@ -456,9 +407,7 @@ const handleCloseCardTabNavigation = (e, card) => {
   }
 };
 
-/**
- * Handles tab navigation from edit button to info button.
- */
+// Handles tab navigation from edit button to info button.
 const handleEditButtonTabNavigation = (e, infoButton, card) => {
   if (e.key === 'Tab' && !e.shiftKey) {
     e.preventDefault();
@@ -470,9 +419,7 @@ const handleEditButtonTabNavigation = (e, infoButton, card) => {
   }
 };
 
-/**
- * Sets up info overlay interactions for a card.
- */
+// Sets up info overlay interactions for a card.
 const setupInfoOverlay = (card) => {
   const infoButton = card.querySelector(`.${CLASSES.INFO_BUTTON}`);
   const overlay = card.querySelector(`.${CLASSES.INFO_OVERLAY}`);
@@ -481,8 +428,7 @@ const setupInfoOverlay = (card) => {
   const editButton = card.querySelector(`.${CLASSES.BUTTON}`);
 
   if (!infoButton || !overlay) return;
-  // Create and append overlay close button
-  // chnage here
+
   const closeOverlayButton = createCloseButton(
     CLASSES.OVERLAY_CLOSE,
     'Close text description',
@@ -523,9 +469,7 @@ const setupInfoOverlay = (card) => {
   }
 };
 
-/**
- * Sets up card interaction handlers (hover, focus, click).
- */
+// Sets up card interaction handlers (hover, focus, click).
 const setupCardInteractions = (card) => {
   const video = card.querySelector(`.${CLASSES.VIDEO_WRAPPER} video`);
 
@@ -554,36 +498,28 @@ const setupCardInteractions = (card) => {
   setupInfoOverlay(card);
 };
 
-/**
- * Sets up interactions for all cards in the container.
- */
+// Sets up interactions for all cards in the container.
 const setupVideoHoverBehavior = (container) => {
   const cards = container.querySelectorAll(`.${CLASSES.CARD}`);
   cards.forEach((card) => setupCardInteractions(card));
 };
 
-/**
- * Renders shimmer placeholder cards.
- */
+// Renders shimmer placeholder cards.
 const renderShimmerGrid = (container, buttonText, cardLimit) => {
   const shimmerCards = Array.from({ length: cardLimit }, () => createShimmerCard(buttonText));
   container.append(...shimmerCards);
 };
 
-/**
- * Adds free tag to a card if needed.
- */
+// Adds free tag to a card if needed.
 const addFreeTagToCard = (card, freeTagText) => {
   if (!freeTagText) return;
 
   const freeTag = createTag('div', { class: CLASSES.FREE_TAG });
   freeTag.textContent = freeTagText;
-  card.append(freeTag);
+  card.insertBefore(freeTag, card.firstChild);
 };
 
-/**
- * Updates cards with fetched data from API.
- */
+// Updates cards with fetched data from API.
 const updateCardsWithData = (container, data, cardLimit, freeTagText) => {
   const cards = container.querySelectorAll(`.${CLASSES.CARD}`);
   const items = data?.files?.slice(0, cardLimit) || [];
@@ -605,9 +541,7 @@ const updateCardsWithData = (container, data, cardLimit, freeTagText) => {
   setupVideoHoverBehavior(container);
 };
 
-/**
- * Initializes the gallery block.
- */
+// Initializes the gallery block.
 export default async function init(el) {
   const blockProps = parseBlockProps(el);
 
