@@ -67,12 +67,10 @@ const isIOSDevice = () => {
   return isiPhone || isiPad;
 };
 
-// Logs errors to analytics.
 const logError = (message) => {
   window.lana?.log(message, { tags: 'prm-yt-gallery' });
 };
 
-// Generic tracking function for analytics events.
 const trackEvent = (eventName) => {
   // eslint-disable-next-line no-underscore-dangle
   if (window._satellite) {
@@ -515,8 +513,6 @@ const setupCardInteractions = (card) => {
       collapseCard(card, video);
     }
   });
-
-  // Setup info overlay
   setupInfoOverlay(card);
 };
 
@@ -588,20 +584,13 @@ export default async function init(el) {
     return;
   }
 
-  // Clear block content and setup grid
   el.innerHTML = '';
   const viewport = getScreenSizeCategory(CONFIG.VIEWPORT);
   const cardLimit = CONFIG.CARD_LIMIT[viewport];
   const grid = createTag('div', { class: CLASSES.GRID });
   el.append(grid);
-
-  // Render shimmer placeholders
   renderShimmerGrid(grid, blockProps.buttonText, cardLimit);
-
-  // Setup block view tracking (fires once when scrolled into view)
   setupBlockViewTracking(el, 'prm-yt-gallery');
-
-  // Fetch and populate data
   const data = await fetchAdobeStockData({
     collectionId: blockProps.collectionId,
     offset: 0,
