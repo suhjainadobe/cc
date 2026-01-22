@@ -12,9 +12,9 @@ const CONFIG = {
 
 // Default block properties
 const DEFAULT_PROPS = {
-  collectionId: null,
+  collectionId: 'GClrnGPOMA39cFtEAAeNWoykuhUmaUw0',
   buttonText: 'Edit this template',
-  freeTagText: null,
+  freeTagText: 'Free',
 };
 
 // CSS Class Names
@@ -72,6 +72,18 @@ const logError = (message) => {
   window.lana?.log(message, { tags: 'prm-yt-gallery' });
 };
 
+// Generic tracking function for analytics events.
+const trackEvent = (eventName) => {
+  // eslint-disable-next-line no-underscore-dangle
+  if (window._satellite) {
+    // eslint-disable-next-line no-underscore-dangle
+    window._satellite?.track('event', {
+      xdm: { web: { webInteraction: { name: eventName } } },
+      data: { web: { webInteraction: { name: eventName } } },
+    });
+  }
+};
+
 const setAriaHidden = (elementOrSelector, hidden, parent = document) => {
   let element = elementOrSelector;
 
@@ -91,6 +103,7 @@ const normalizeItem = (apiItem) => ({
   deepLinkUrl: createTemplateDeepLink(apiItem.id),
   video: cleanUrl(apiItem.video_preview_url),
   isFree: apiItem.is_free || false,
+  ID: apiItem.id,
 });
 
 // Builds Adobe Stock API URL with query parameters.
@@ -174,7 +187,6 @@ const expandCard = (card, video) => {
   card.classList.add(CLASSES.EXPANDED);
 
   setAriaHidden(`.${CLASSES.CLOSE_CARD_BUTTON}`, false, card);
-  setAriaHidden(`.${CLASSES.INFO_BUTTON}`, true, card);
 
   if (video && !card.classList.contains(CLASSES.INFO_VISIBLE)) {
     playVideo(video);
@@ -187,7 +199,6 @@ const collapseCard = (card, video) => {
   card.querySelector(`.${CLASSES.OVERLAY_TEXT}`).scrollTop = 0;
 
   setAriaHidden(`.${CLASSES.CLOSE_CARD_BUTTON}`, true, card);
-  setAriaHidden(`.${CLASSES.INFO_BUTTON}`, true, card);
 
   if (video) video.pause();
 };
@@ -282,6 +293,7 @@ const createShimmerCard = (buttonText) => {
   const card = createTag('div', {
     class: `${CLASSES.CARD} ${CLASSES.SHIMMER}`,
     tabindex: '0',
+    role: 'presentation',
     'aria-label': ' ',
   });
   const cardInner = createTag('div', { class: CLASSES.CARD_INNER });
@@ -323,6 +335,10 @@ const updateCardWithData = (card, item, eager = false) => {
   const videoWrapper = card.querySelector(`.${CLASSES.VIDEO_WRAPPER}`);
   const button = card.querySelector(`.${CLASSES.BUTTON}`);
   const overlayText = card.querySelector(`.${CLASSES.OVERLAY_TEXT}`);
+  card.setAttribute('aria-label', ' ');
+  if (item.ID) {
+    card.setAttribute('data-template-id', item.ID);
+  }
 
   // Add and handle image loading
   const img = createImageElement(item.image, eager);
@@ -354,7 +370,6 @@ const showInfoOverlay = (card, video, closeOverlayButton) => {
   card.classList.add(CLASSES.INFO_VISIBLE);
   if (video) video.pause();
 
-  setAriaHidden(`.${CLASSES.INFO_BUTTON}`, true, card);
 
   if (closeOverlayButton) {
     closeOverlayButton.tabindex = 0;
@@ -368,7 +383,6 @@ const hideInfoOverlay = (card, video) => {
   card.classList.remove(CLASSES.INFO_VISIBLE);
 
   setAriaHidden(`.${CLASSES.OVERLAY_CLOSE}`, true, card);
-  setAriaHidden(`.${CLASSES.INFO_BUTTON}`, true, card);
 
   if (video) {
     video.play().catch((error) => {
@@ -473,13 +487,20 @@ const setupInfoOverlay = (card) => {
 // Sets up card interaction handlers (hover, focus, click).
 const setupCardInteractions = (card) => {
   const video = card.querySelector(`.${CLASSES.VIDEO_WRAPPER} video`);
+  const templateId = card.getAttribute('data-template-id') || 'Unknown';
 
   // Mobile/Tablet: expand on click, Desktop: expand on hover
   if (getScreenSizeCategory(CONFIG.VIEWPORT) === 'mobile' || getScreenSizeCategory(CONFIG.VIEWPORT) === 'tablet') {
-    card.addEventListener('click', () => expandCard(card, video));
+    card.addEventListener('click', () => {
+      trackEvent(`${templateId}:video plays`);
+      expandCard(card, video);
+    });
   } else {
     // Desktop: expand on hover
-    card.addEventListener('mouseenter', () => expandCard(card, video));
+    card.addEventListener('mouseenter', () => {
+      trackEvent(`${templateId}:video plays`);
+      expandCard(card, video);
+    });
     card.addEventListener('mouseleave', () => collapseCard(card, video));
   }
 
@@ -542,6 +563,22 @@ const updateCardsWithData = (container, data, cardLimit, freeTagText) => {
   setupVideoHoverBehavior(container);
 };
 
+const setupBlockViewTracking = (el, blockName) => {
+  let hasTracked = false;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting && !hasTracked) {
+        hasTracked = true;
+        trackEvent(`Block:${blockName}:viewed`);
+        observer.disconnect();
+      }
+    });
+  }, { threshold: 0.1 });
+
+  observer.observe(el);
+};
+
 // Initializes the gallery block.
 export default async function init(el) {
   const blockProps = parseBlockProps(el);
@@ -560,6 +597,9 @@ export default async function init(el) {
 
   // Render shimmer placeholders
   renderShimmerGrid(grid, blockProps.buttonText, cardLimit);
+
+  // Setup block view tracking (fires once when scrolled into view)
+  setupBlockViewTracking(el, 'prm-yt-gallery');
 
   // Fetch and populate data
   const data = await fetchAdobeStockData({
