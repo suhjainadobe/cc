@@ -367,8 +367,6 @@ const updateCardWithData = (card, item, eager = false) => {
 const showInfoOverlay = (card, video, closeOverlayButton) => {
   card.classList.add(CLASSES.INFO_VISIBLE);
   if (video) video.pause();
-
-
   if (closeOverlayButton) {
     closeOverlayButton.tabindex = 0;
     setAriaHidden(closeOverlayButton, false);
