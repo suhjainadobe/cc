@@ -377,9 +377,7 @@ const showInfoOverlay = (card, video, closeOverlayButton) => {
 // Hides info overlay and resumes video.
 const hideInfoOverlay = (card, video) => {
   card.classList.remove(CLASSES.INFO_VISIBLE);
-
   setAriaHidden(`.${CLASSES.OVERLAY_CLOSE}`, true, card);
-
   if (video) {
     video.play().catch((error) => {
       logError(`Failed to resume video after closing info overlay: ${error.message}`);
@@ -529,7 +527,6 @@ const renderShimmerGrid = (container, buttonText, cardLimit) => {
 // Adds free tag to a card if needed.
 const addFreeTagToCard = (card, freeTagText) => {
   if (!freeTagText) return;
-
   const freeTag = createTag('div', { class: CLASSES.FREE_TAG });
   freeTag.textContent = freeTagText;
   card.insertBefore(freeTag, card.firstChild);
@@ -539,7 +536,6 @@ const addFreeTagToCard = (card, freeTagText) => {
 const updateCardsWithData = (container, data, cardLimit, freeTagText) => {
   const cards = container.querySelectorAll(`.${CLASSES.CARD}`);
   const items = data?.files?.slice(0, cardLimit) || [];
-
   items.forEach((rawItem, index) => {
     const card = cards[index];
     if (!card) return;
@@ -553,13 +549,11 @@ const updateCardsWithData = (container, data, cardLimit, freeTagText) => {
       addFreeTagToCard(card, freeTagText);
     }
   });
-
   setupVideoHoverBehavior(container);
 };
 
 const setupBlockViewTracking = (el, blockName) => {
   let hasTracked = false;
-
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting && !hasTracked) {
@@ -569,14 +563,12 @@ const setupBlockViewTracking = (el, blockName) => {
       }
     });
   }, { threshold: 0.1 });
-
   observer.observe(el);
 };
 
 // Initializes the gallery block.
 export default async function init(el) {
   const blockProps = parseBlockProps(el);
-
   if (!blockProps.collectionId) {
     logError('Collection ID is required for prm-yt-gallery');
     return;
@@ -594,7 +586,6 @@ export default async function init(el) {
     offset: 0,
     limit: 96,
   });
-
   if (data) {
     updateCardsWithData(grid, data, cardLimit, blockProps.freeTagText);
   }
