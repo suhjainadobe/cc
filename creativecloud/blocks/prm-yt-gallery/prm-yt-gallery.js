@@ -3,8 +3,10 @@ import { createTag, getScreenSizeCategory, getConfig } from '../../scripts/utils
 const CONFIG = {
   CARD_LIMIT: { desktop: 15, tablet: 9, mobile: 10 },
   API: {
+    KEY: 'milo-prm-yt-gallery',
+    SKIP_API_KEY: false,
     PRODUCT: 'creativecloud',
-    BASE_URL: '/stock-api/Rest/Media/1/Search/Collections',
+    BASE_URL: 'https://stock.adobe.io/Rest/Media/1/Search/Collections',
   },
   VIEWPORT: { mobile: 599, tablet: 1199 },
   EAGER_LOAD_COUNT: 6,
@@ -114,9 +116,7 @@ const buildApiUrl = (collectionId, offset, limit) => {
     'search_parameters[order]': 'creation',
     'search_parameters[gallery_id]': collectionId,
   });
-  const { env } = getConfig();
-  const apiUrl = env.name === 'stage' || env.name === 'local' ? `https://www.stage.adobe.com${CONFIG.API.BASE_URL}?${params.toString()}` : `${CONFIG.API.BASE_URL}?${params.toString()}`;
-  return apiUrl;
+  return `${CONFIG.API.BASE_URL}?${params.toString()}`;
 };
 
 // Fetches data from Adobe Stock API.
@@ -124,6 +124,9 @@ const fetchAdobeStockData = async ({ collectionId, offset = 0, limit }) => {
   try {
     const apiUrl = buildApiUrl(collectionId, offset, limit);
     const headers = { 'x-product': CONFIG.API.PRODUCT };
+    if (!CONFIG.API.SKIP_API_KEY) {
+      headers['x-api-key'] = CONFIG.API.KEY;
+    }
 
     const response = await fetch(apiUrl, {
       method: 'GET',
