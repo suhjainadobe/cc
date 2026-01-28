@@ -295,11 +295,11 @@ const createShimmerCard = (buttonText) => {
     class: `${CLASSES.CARD} ${CLASSES.SHIMMER}`,
     tabindex: '0',
     role: 'presentation',
-    'aria-label': '',
+    'aria-hidden': 'true',
   });
   const cardInner = createTag('div', { class: CLASSES.CARD_INNER });
-  const imageWrapper = createTag('div', { class: CLASSES.IMAGE_WRAPPER, 'aria-label': '' });
-  const videoWrapper = createTag('div', { class: CLASSES.VIDEO_WRAPPER, 'aria-label': '' });
+  const imageWrapper = createTag('div', { class: CLASSES.IMAGE_WRAPPER });
+  const videoWrapper = createTag('div', { class: CLASSES.VIDEO_WRAPPER });
 
   // Add edit button only on iOS devices
   if (isIOSDevice()) {
@@ -336,7 +336,10 @@ const updateCardWithData = (card, item, eager = false) => {
   const videoWrapper = card.querySelector(`.${CLASSES.VIDEO_WRAPPER}`);
   const button = card.querySelector(`.${CLASSES.BUTTON}`);
   const overlayText = card.querySelector(`.${CLASSES.OVERLAY_TEXT}`);
-  card.setAttribute('aria-label', '');
+  // Remove aria-hidden from card and wrappers once content is loaded
+  // card.removeAttribute('aria-hidden');
+  // if (imageWrapper) imageWrapper.removeAttribute('aria-hidden');
+  // if (videoWrapper) videoWrapper.removeAttribute('aria-hidden');
   if (item.ID) {
     card.setAttribute('data-template-id', item.ID);
   }
