@@ -115,7 +115,12 @@ const buildApiUrl = (collectionId, offset, limit) => {
     'search_parameters[gallery_id]': collectionId,
   });
   const { env } = getConfig();
-  const apiUrl = env.name === 'stage' || env.name === 'local' ? `https://www.stage.adobe.com${CONFIG.API.BASE_URL}?${params.toString()}` : `${CONFIG.API.BASE_URL}?${params.toString()}`;
+  const nonProdEnvList = ['stage', 'local'];
+  const baseUrl = nonProdEnvList.includes(env.name)
+    ? 'https://www.stage.adobe.com'
+    : '';
+
+  const apiUrl = `${baseUrl}${CONFIG.API.BASE_URL}?${params.toString()}`;
   return apiUrl;
 };
 
