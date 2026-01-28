@@ -580,6 +580,12 @@ export default async function init(el) {
     return;
   }
 
+  // Debug: Log focused elements during keyboard navigation
+  document.addEventListener('focusin', (e) => {
+    // eslint-disable-next-line no-console
+    console.log('Focused element:', e.target, 'Tag:', e.target.tagName, 'Class:', e.target.className, 'aria-label:', e.target.getAttribute('aria-label'));
+  });
+
   el.innerHTML = '';
   const viewport = getScreenSizeCategory(CONFIG.VIEWPORT);
   const cardLimit = CONFIG.CARD_LIMIT[viewport];
