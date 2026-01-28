@@ -295,7 +295,6 @@ const createShimmerCard = (buttonText) => {
     class: `${CLASSES.CARD} ${CLASSES.SHIMMER}`,
     tabindex: '0',
     role: 'presentation',
-    'aria-hidden': 'true',
   });
   const cardInner = createTag('div', { class: CLASSES.CARD_INNER });
   const imageWrapper = createTag('div', { class: CLASSES.IMAGE_WRAPPER });
@@ -337,9 +336,6 @@ const updateCardWithData = (card, item, eager = false) => {
   const button = card.querySelector(`.${CLASSES.BUTTON}`);
   const overlayText = card.querySelector(`.${CLASSES.OVERLAY_TEXT}`);
   // Remove aria-hidden from card and wrappers once content is loaded
-  // card.removeAttribute('aria-hidden');
-  // if (imageWrapper) imageWrapper.removeAttribute('aria-hidden');
-  // if (videoWrapper) videoWrapper.removeAttribute('aria-hidden');
   if (item.ID) {
     card.setAttribute('data-template-id', item.ID);
   }
