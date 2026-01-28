@@ -279,7 +279,6 @@
 
   .marquee.large.interactive-enabled.content-top-mobile .text p:not([class]) {
     order: 2;
-    margin-top: var(--spacing-s);
   }
 
   .marquee.large.interactive-enabled.content-top-mobile .text .action-area {
@@ -436,7 +435,6 @@
 
   .marquee.large.interactive-enabled .text p:not([class]) {
     order: 2;
-    margin-top: var(--spacing-s);
   }
 
   .marquee.large.interactive-enabled .text .action-area {
