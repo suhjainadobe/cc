@@ -531,7 +531,7 @@ const renderShimmerGrid = (container, buttonText, cardLimit) => {
 // Adds free tag to a card if needed.
 const addFreeTagToCard = (card, freeTagText) => {
   if (!freeTagText) return;
-  const freeTag = createTag('div', { class: CLASSES.FREE_TAG, 'aria-hidden': 'true' });
+  const freeTag = createTag('div', { class: CLASSES.FREE_TAG });
   freeTag.textContent = freeTagText;
   card.insertBefore(freeTag, card.firstChild);
 };
