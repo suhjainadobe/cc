@@ -294,6 +294,7 @@ const createShimmerCard = (buttonText) => {
   const card = createTag('div', {
     class: `${CLASSES.CARD} ${CLASSES.SHIMMER}`,
     tabindex: '0',
+    role: 'presentation',
   });
   const cardInner = createTag('div', { class: CLASSES.CARD_INNER });
   const imageWrapper = createTag('div', { class: CLASSES.IMAGE_WRAPPER });
@@ -531,7 +532,7 @@ const renderShimmerGrid = (container, buttonText, cardLimit) => {
 // Adds free tag to a card if needed.
 const addFreeTagToCard = (card, freeTagText) => {
   if (!freeTagText) return;
-  const freeTag = createTag('div', { class: CLASSES.FREE_TAG });
+  const freeTag = createTag('div', { class: CLASSES.FREE_TAG, 'aria-hidden': 'true' });
   freeTag.textContent = freeTagText;
   card.insertBefore(freeTag, card.firstChild);
 };
