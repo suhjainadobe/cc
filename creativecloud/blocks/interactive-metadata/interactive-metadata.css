@@ -275,6 +275,7 @@
   
   .marquee.large.interactive-enabled.content-top-mobile .text .body-xl {
     order: 1;
+    margin-bottom: var(--spacing-s);
   }
 
   .marquee.large.interactive-enabled.content-top-mobile .text p:not([class]) {
@@ -431,6 +432,7 @@
   
   .marquee.large.interactive-enabled .text .body-xl {
     order: 1;
+    margin-bottom: var(--spacing-s);
   }
 
   .marquee.large.interactive-enabled .text p:not([class]) {
