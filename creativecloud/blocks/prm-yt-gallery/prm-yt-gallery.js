@@ -298,8 +298,8 @@ const createShimmerCard = (buttonText) => {
     'aria-label': '',
   });
   const cardInner = createTag('div', { class: CLASSES.CARD_INNER });
-  const imageWrapper = createTag('div', { class: CLASSES.IMAGE_WRAPPER });
-  const videoWrapper = createTag('div', { class: CLASSES.VIDEO_WRAPPER });
+  const imageWrapper = createTag('div', { class: CLASSES.IMAGE_WRAPPER, 'aria-label': '' });
+  const videoWrapper = createTag('div', { class: CLASSES.VIDEO_WRAPPER, 'aria-label': '' });
 
   // Add edit button only on iOS devices
   if (isIOSDevice()) {
