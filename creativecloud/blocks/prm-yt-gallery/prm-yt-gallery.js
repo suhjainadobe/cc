@@ -188,9 +188,6 @@ const playVideo = (video) => {
 // Expands a card and starts video playback.
 const expandCard = (card, video) => {
   card.classList.add(CLASSES.EXPANDED);
-
-  setAriaHidden(`.${CLASSES.CLOSE_CARD_BUTTON}`, false, card);
-
   if (video && !card.classList.contains(CLASSES.INFO_VISIBLE)) {
     playVideo(video);
   }
@@ -200,20 +197,17 @@ const expandCard = (card, video) => {
 const collapseCard = (card, video) => {
   card.classList.remove(CLASSES.EXPANDED, CLASSES.INFO_VISIBLE);
   card.querySelector(`.${CLASSES.OVERLAY_TEXT}`).scrollTop = 0;
-
-  setAriaHidden(`.${CLASSES.CLOSE_CARD_BUTTON}`, true, card);
-
   if (video) video.pause();
 };
 
 // Creates a reusable close button.
-const createCloseButton = (className, ariaLabel, onClick, tabIndex = 0, ariaHidden = true) => {
+const createCloseButton = (className, ariaLabel, onClick, tabIndex = 0) => {
   const button = createTag('button', {
     class: className,
     'aria-label': ariaLabel,
     type: 'button',
     tabIndex,
-    'aria-hidden': ariaHidden ? 'true' : 'false',
+    'aria-hidden': 'true',
   });
   button.insertAdjacentHTML('beforeend', ICONS.close);
   button.addEventListener('click', (e) => {
