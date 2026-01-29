@@ -371,7 +371,7 @@ const showInfoOverlay = (card, video, closeOverlayButton) => {
   if (video) video.pause();
   if (closeOverlayButton) {
     closeOverlayButton.tabindex = 0;
-    setAriaHidden(closeOverlayButton, false);
+    // setAriaHidden(closeOverlayButton, false);
     closeOverlayButton.focus();
   }
 };
@@ -379,7 +379,7 @@ const showInfoOverlay = (card, video, closeOverlayButton) => {
 // Hides info overlay and resumes video.
 const hideInfoOverlay = (card, video) => {
   card.classList.remove(CLASSES.INFO_VISIBLE);
-  setAriaHidden(`.${CLASSES.OVERLAY_CLOSE}`, true, card);
+  // setAriaHidden(`.${CLASSES.OVERLAY_CLOSE}`, true, card);
   if (video) {
     video.play().catch((error) => {
       logError(`Failed to resume video after closing info overlay: ${error.message}`);
