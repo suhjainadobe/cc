@@ -349,7 +349,6 @@ const updateCardWithData = (card, item, eager = false) => {
   // Update overlay text
   if (overlayText) {
     overlayText.textContent = item.altText;
-    overlayText.ariaLive = 'polite';
     overlayText.id = overlayTextId;
   }
 
