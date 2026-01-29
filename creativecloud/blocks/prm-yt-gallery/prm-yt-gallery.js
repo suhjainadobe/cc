@@ -188,7 +188,7 @@ const expandCard = (card, video) => {
   card.classList.add(CLASSES.EXPANDED);
 
   // setAriaHidden(`.${CLASSES.CLOSE_CARD_BUTTON}`, false, card);
-  setAriaHidden(`.${CLASSES.BUTTON}`, false, card);
+  // setAriaHidden(`.${CLASSES.BUTTON}`, false, card);
   // setAriaHidden(`.${CLASSES.INFO_BUTTON}`, false, card);
 
   if (video && !card.classList.contains(CLASSES.INFO_VISIBLE)) {
@@ -202,7 +202,7 @@ const collapseCard = (card, video) => {
   card.querySelector(`.${CLASSES.OVERLAY_TEXT}`).scrollTop = 0;
 
   // setAriaHidden(`.${CLASSES.CLOSE_CARD_BUTTON}`, true, card);
-  setAriaHidden(`.${CLASSES.BUTTON}`, true, card);
+  // setAriaHidden(`.${CLASSES.BUTTON}`, true, card);
   // setAriaHidden(`.${CLASSES.INFO_BUTTON}`, true, card);
 
   if (video) video.pause();
@@ -215,7 +215,7 @@ const createCloseButton = (className, ariaLabel, onClick, tabIndex = 0, ariaHidd
     'aria-label': ariaLabel,
     type: 'button',
     tabIndex,
-    'aria-hidden': ariaHidden ? 'true' : 'false',
+    'aria-hidden': 'true',
   });
   button.insertAdjacentHTML('beforeend', ICONS.close);
   button.addEventListener('click', (e) => {
