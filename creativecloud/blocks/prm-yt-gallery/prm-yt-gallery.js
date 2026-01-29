@@ -352,6 +352,7 @@ const updateCardWithData = (card, item, eager = false) => {
     overlayText.textContent = item.altText;
     overlayText.ariaLive = 'polite';
     overlayText.id = overlayTextId;
+    overlayText.setAttribute('aria-hidden', 'true');
   }
 
   // Update button deep link and aria-describedby
