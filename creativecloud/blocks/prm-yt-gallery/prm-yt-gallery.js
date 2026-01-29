@@ -187,7 +187,9 @@ const playVideo = (video) => {
 const expandCard = (card, video) => {
   card.classList.add(CLASSES.EXPANDED);
 
-  setAriaHidden(`.${CLASSES.CLOSE_CARD_BUTTON}`, false, card);
+  // setAriaHidden(`.${CLASSES.CLOSE_CARD_BUTTON}`, false, card);
+  // setAriaHidden(`.${CLASSES.BUTTON}`, false, card);
+  // setAriaHidden(`.${CLASSES.INFO_BUTTON}`, false, card);
 
   if (video && !card.classList.contains(CLASSES.INFO_VISIBLE)) {
     playVideo(video);
@@ -199,7 +201,9 @@ const collapseCard = (card, video) => {
   card.classList.remove(CLASSES.EXPANDED, CLASSES.INFO_VISIBLE);
   card.querySelector(`.${CLASSES.OVERLAY_TEXT}`).scrollTop = 0;
 
-  setAriaHidden(`.${CLASSES.CLOSE_CARD_BUTTON}`, true, card);
+  // setAriaHidden(`.${CLASSES.CLOSE_CARD_BUTTON}`, true, card);
+  // setAriaHidden(`.${CLASSES.BUTTON}`, true, card);
+  // setAriaHidden(`.${CLASSES.INFO_BUTTON}`, true, card);
 
   if (video) video.pause();
 };
@@ -245,7 +249,11 @@ const createInfoButton = () => {
 
 // Creates the "Edit this template" button.
 const createEditButton = (buttonText) => {
-  const button = createTag('a', { class: CLASSES.BUTTON, tabindex: '0' });
+  const button = createTag('a', {
+    class: CLASSES.BUTTON,
+    tabindex: '0',
+    'aria-hidden': 'true',
+  });
   button.textContent = buttonText;
   return button;
 };
