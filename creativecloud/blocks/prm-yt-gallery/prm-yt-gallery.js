@@ -241,7 +241,11 @@ const createInfoButton = () => {
 
 // Creates the "Edit this template" button.
 const createEditButton = (buttonText) => {
-  const button = createTag('a', { class: CLASSES.BUTTON, tabindex: '0' });
+  const button = createTag('a', {
+    class: CLASSES.BUTTON,
+    tabindex: '0',
+    'aria-hidden': 'true',
+  });
   button.textContent = buttonText;
   return button;
 };
@@ -332,7 +336,10 @@ const updateCardWithData = (card, item, eager = false) => {
   const videoWrapper = card.querySelector(`.${CLASSES.VIDEO_WRAPPER}`);
   const button = card.querySelector(`.${CLASSES.BUTTON}`);
   const overlayText = card.querySelector(`.${CLASSES.OVERLAY_TEXT}`);
-  card.setAttribute('aria-label', '');
+  // Make card accessible once content is loaded
+  if (item.altText) {
+    card.setAttribute('aria-label', item.altText);
+  }
   if (item.ID) {
     card.setAttribute('data-template-id', item.ID);
   }
