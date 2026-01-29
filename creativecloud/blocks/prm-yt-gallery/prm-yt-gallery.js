@@ -186,11 +186,6 @@ const playVideo = (video) => {
 // Expands a card and starts video playback.
 const expandCard = (card, video) => {
   card.classList.add(CLASSES.EXPANDED);
-
-  // setAriaHidden(`.${CLASSES.CLOSE_CARD_BUTTON}`, false, card);
-  // setAriaHidden(`.${CLASSES.BUTTON}`, false, card);
-  // setAriaHidden(`.${CLASSES.INFO_BUTTON}`, false, card);
-
   if (video && !card.classList.contains(CLASSES.INFO_VISIBLE)) {
     playVideo(video);
   }
@@ -200,16 +195,11 @@ const expandCard = (card, video) => {
 const collapseCard = (card, video) => {
   card.classList.remove(CLASSES.EXPANDED, CLASSES.INFO_VISIBLE);
   card.querySelector(`.${CLASSES.OVERLAY_TEXT}`).scrollTop = 0;
-
-  // setAriaHidden(`.${CLASSES.CLOSE_CARD_BUTTON}`, true, card);
-  // setAriaHidden(`.${CLASSES.BUTTON}`, true, card);
-  // setAriaHidden(`.${CLASSES.INFO_BUTTON}`, true, card);
-
   if (video) video.pause();
 };
 
 // Creates a reusable close button.
-const createCloseButton = (className, ariaLabel, onClick, tabIndex = 0, ariaHidden = true) => {
+const createCloseButton = (className, ariaLabel, onClick, tabIndex = 0) => {
   const button = createTag('button', {
     class: className,
     'aria-label': ariaLabel,
@@ -586,12 +576,6 @@ export default async function init(el) {
     logError('Collection ID is required for prm-yt-gallery');
     return;
   }
-
-  // Debug: Log focused elements during keyboard navigation
-  document.addEventListener('focusin', (e) => {
-    // eslint-disable-next-line no-console
-    console.log('Focused element:', e.target, 'Tag:', e.target.tagName, 'Class:', e.target.className, 'aria-label:', e.target.getAttribute('aria-label'));
-  });
 
   el.innerHTML = '';
   const viewport = getScreenSizeCategory(CONFIG.VIEWPORT);
